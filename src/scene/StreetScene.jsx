@@ -271,6 +271,9 @@ function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen,
           transition={{ duration: 0.45, ease: 'easeOut' }}
         >
           <p className="prompt-title">&iquest;Pizza o bocata?</p>
+          <p className="prompt-hint">
+            Haz clic en una m&aacute;quina para ver su carta
+          </p>
           <div className="prompt-actions">
             <button type="button" onClick={() => onPick('pizza')}>
               Pizzas
