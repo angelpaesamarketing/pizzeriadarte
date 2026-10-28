@@ -12,6 +12,7 @@ import { Facade } from './Facade';
 import { Tram } from './Tram';
 import { useViewport } from '../hooks/useViewport';
 import { useOneScrollJump } from '../hooks/useOneScrollJump';
+import { prepararCampana } from './campana';
 
 /**
  * Alto de la seccion, es decir cuanto scroll cuesta llegar al local.
@@ -125,6 +126,9 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
 
   const skip = useCallback(() => {
     if (reduced) return;
+    // El clic es el gesto que el navegador exige para dejar sonar: se
+    // aprovecha para descodificar la campana antes de que el tranvia entre.
+    prepararCampana();
     viajar();
   }, [reduced, viajar]);
 

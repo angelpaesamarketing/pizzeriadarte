@@ -1,11 +1,21 @@
 /**
- * La campana del tranvia, el «ding ding».
+ * La campana del tranvia.
  *
- * Se sintetiza en vez de cargar un fichero: son cuatro senos con sus
- * armonicos desafinados -que es lo que hace que una campana suene a metal y
- * no a pitido- y pesa cero.
+ * Es una grabacion real (`/assets/campana.mp3`, 25 KB): dos golpes separados
+ * unos 380 ms, con los parciales fuertes en 1,9 / 4,5 / 6,8 kHz, que es de
+ * donde sale lo estridente. Antes estaba sintetizada y sonaba demasiado
+ * redonda para un tranvia.
+ *
+ * Se reproduce con Web Audio y no con un <audio>: el buffer se descodifica
+ * una sola vez y cada pasada arranca al instante, sin el retardo de recargar
+ * el elemento ni el riesgo de pisarse consigo mismo.
  */
+const FUENTE = '/assets/campana.mp3';
+const VOLUMEN = 0.75;
+
 let ctx = null;
+let buffer = null;
+let cargando = null;
 
 function contexto() {
   if (ctx) return ctx;
@@ -15,22 +25,19 @@ function contexto() {
   return ctx;
 }
 
-/** Un golpe de campana. Las parciales no son multiplos enteros a proposito. */
-function golpe(ac, cuando, f0 = 1180, volumen = 0.14) {
-  const parciales = [1, 2.0, 2.76, 5.4];
-  const pesos = [1, 0.45, 0.3, 0.1];
-  parciales.forEach((m, i) => {
-    const osc = ac.createOscillator();
-    const g = ac.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = f0 * m;
-    g.gain.setValueAtTime(0, cuando);
-    g.gain.linearRampToValueAtTime(volumen * pesos[i], cuando + 0.004);
-    g.gain.exponentialRampToValueAtTime(0.0001, cuando + 0.5 + i * 0.06);
-    osc.connect(g).connect(ac.destination);
-    osc.start(cuando);
-    osc.stop(cuando + 0.9);
-  });
+function cargar(ac) {
+  if (buffer) return Promise.resolve(buffer);
+  if (!cargando) {
+    cargando = fetch(FUENTE)
+      .then((r) => r.arrayBuffer())
+      .then((datos) => ac.decodeAudioData(datos))
+      .then((b) => {
+        buffer = b;
+        return b;
+      })
+      .catch(() => null);
+  }
+  return cargando;
 }
 
 /**
@@ -40,14 +47,27 @@ function golpe(ac, cuando, f0 = 1180, volumen = 0.14) {
 export function tocarCampana() {
   if (typeof window === 'undefined') return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
   const ac = contexto();
   if (!ac) return;
-  const arranque = ac.state === 'suspended' ? ac.resume() : Promise.resolve();
-  arranque
-    .then(() => {
-      const t0 = ac.currentTime + 0.02;
-      golpe(ac, t0);
-      golpe(ac, t0 + 0.26);
+
+  const listo = ac.state === 'suspended' ? ac.resume() : Promise.resolve();
+  listo
+    .then(() => cargar(ac))
+    .then((b) => {
+      if (!b) return;
+      const fuente = ac.createBufferSource();
+      const volumen = ac.createGain();
+      fuente.buffer = b;
+      volumen.gain.value = VOLUMEN;
+      fuente.connect(volumen).connect(ac.destination);
+      fuente.start();
     })
     .catch(() => {});
+}
+
+/** Deja el sonido descodificado antes de que haga falta. */
+export function prepararCampana() {
+  const ac = contexto();
+  if (ac) cargar(ac);
 }

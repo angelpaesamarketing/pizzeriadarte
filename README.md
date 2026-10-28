@@ -78,12 +78,17 @@ lado -2.340 px en escritorio- y hacia la mayor parte del camino fuera de
 cuadro: cruzaba en cuatro decimas. Midiendolo asi entra justo por un borde y
 sale por el otro, y tarda 855 ms.
 
-Al entrar suena la campana (`src/scene/campana.js`): no es un fichero, son
-cuatro
-senos con los armonicos desafinados, que es lo que hace que suene a metal y no
-a pitido. Suena una vez por pasada y se rearma al salir. Si el navegador no
-deja sonar sin un gesto previo, no pasa nada; con `prefers-reduced-motion`
-tampoco suena.
+Al entrar suena la campana (`src/scene/campana.js`): una grabacion real,
+`/assets/campana.mp3`, 25 KB y 1,5 s con los dos golpes. Los parciales fuertes
+estan en 1,9 / 4,5 / 6,8 kHz, que es de donde sale lo estridente; sintetizada
+sonaba demasiado redonda para un tranvia.
+
+Se reproduce con Web Audio y no con un `<audio>`: el buffer se descodifica una
+sola vez y cada pasada arranca al instante. Suena una vez por pasada y se
+rearma al salir, de modo que subiendo y bajando vuelve a sonar. El clic del
+circulo aprovecha para descodificarla, que es ademas el gesto que el navegador
+exige para dejar sonar. Si lo bloquea, no pasa nada; con
+`prefers-reduced-motion` tampoco suena.
 
 El desenfoque de movimiento se pone por CSS, no en el asset, para que
 acompane a la velocidad en vez de ser una cantidad fija pintada en la imagen.
