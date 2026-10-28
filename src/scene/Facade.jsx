@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FACADE, OPENINGS } from './geometry';
+import { OPENINGS } from './geometry';
 import { Machine } from './Machine';
 import { Chef } from './Chef';
 
@@ -14,12 +14,15 @@ const LABEL = {
  * Las capas de cerca del local: interior de los huecos, maquinas, fachada
  * recortada y cocinero.
  *
- * Toma el relevo de la plancha panoramica a mitad del acercamiento. Como esta
+ * La caja viene de fuera porque depende del juego de plancha activo: la
+ * apaisada y la vertical encuadran el local en sitios distintos.
+ *
+ * Toma el relevo de la plancha a mitad del acercamiento. Como esta
  * colocada sobre el rotulo medido de la plancha y vive dentro del mismo mundo,
  * el cambio es un fundido en el sitio: no hay salto de posicion ni de escala,
  * ni dos fachadas a la vez.
  */
-export function Facade({ opacity, phase, night, selected, busy, delivered, onPick }) {
+export function Facade({ box, opacity, phase, night, selected, busy, delivered, onPick }) {
   const ready = phase === 'ready';
   const interactive = ready && !busy && !delivered;
 
@@ -27,10 +30,10 @@ export function Facade({ opacity, phase, night, selected, busy, delivered, onPic
     <motion.div
       className={`facade${night ? ' facade--noche' : ''}`}
       style={{
-        left: pct(FACADE.left),
-        top: pct(FACADE.top),
-        width: pct(FACADE.width),
-        height: pct(FACADE.height),
+        left: pct(box.left),
+        top: pct(box.top),
+        width: pct(box.width),
+        height: pct(box.height),
         opacity,
       }}
     >

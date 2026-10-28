@@ -1,11 +1,11 @@
-import { PLATE_AR, FOCUS, framing } from './geometry';
+import { framing } from './geometry';
 
 /**
  * Una sola camara para toda la escena.
  *
  * El mundo es un div de tamano fijo (`baseW` x `baseH`, con el aspecto de la
- * panoramica) y todo lo que hay dentro -plancha, fachada, maquinas, cocinero-
- * se posiciona en porcentajes de esa caja. La camara es un unico
+ * plancha activa) y todo lo que hay dentro -calle, fachada, maquinas,
+ * cocinero- se posiciona en porcentajes de esa caja. La camara es un unico
  * `translate() scale()` aplicado al mundo entero, asi que las capas no pueden
  * descolgarse entre si: no hay dos animaciones que sincronizar.
  *
@@ -14,26 +14,30 @@ import { PLATE_AR, FOCUS, framing } from './geometry';
  * Despejando para que el foco caiga donde queremos salen tx y ty.
  */
 export function makeCamera(vw, vh) {
+  const { g, vwfFar, vwfNear, focusScreen, portrait, name } = framing(vw, vh);
   const baseW = Math.max(vw, 1);
-  const baseH = baseW / PLATE_AR;
-  const { vwfFar, vwfNear, focusScreen, portrait } = framing(vw, vh);
+  const baseH = baseW / g.ar;
 
-  /** @param t 0 = plano general, 1 = plano cercano del local. */
-  function at(t) {
+  /**
+   * @param t     0 = plano general, 1 = plano cercano del local.
+   * @param aside cuanto se aparta el local hacia la izquierda, en anchos de
+   *              pantalla, para dejar sitio a la carta en escritorio.
+   */
+  function at(t, aside = 0) {
     const vwf = vwfFar + (vwfNear - vwfFar) * t;
     const scale = vw / vwf / baseW;
 
-    const sx = focusScreen.farX + (focusScreen.nearX - focusScreen.farX) * t;
+    const sx = focusScreen.farX + (focusScreen.nearX - focusScreen.farX) * t - aside;
     const sy = focusScreen.farY + (focusScreen.nearY - focusScreen.farY) * t;
 
     return {
       scale,
-      x: sx * vw - FOCUS.x * baseW * scale,
-      y: sy * vh - FOCUS.y * baseH * scale,
+      x: sx * vw - g.focus.x * baseW * scale,
+      y: sy * vh - g.focus.y * baseH * scale,
     };
   }
 
-  return { baseW, baseH, at, portrait };
+  return { baseW, baseH, at, portrait, set: name, g };
 }
 
 /**

@@ -6,23 +6,35 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { PHASE, PLATES, PLATE_EDGE, phaseOf } from './geometry';
+import { PHASE, phaseOf } from './geometry';
 import { makeCamera, easeApproach } from './camera';
 import { Facade } from './Facade';
+import { Tram } from './Tram';
 import { useViewport } from '../hooks/useViewport';
 
-/** Alto de la seccion: cuanto scroll cuesta recorrer la calle entera. */
-export const SCENE_VH = 300;
+/**
+ * Alto de la seccion, es decir cuanto scroll cuesta llegar al local.
+ *
+ * En escritorio son 150vh: el recorrido util es medio viewport, que se cubre
+ * con un solo gesto de rueda o de trackpad. En movil se deja algo mas, porque
+ * deslizar es barato y un recorrido muy corto se pasa de largo sin querer.
+ */
+export const SCENE_VH = { horizontal: 150, vertical: 200 };
 
 /** Lo que tarda la maquina en "preparar" antes de que salga el cocinero. */
-const PREP_MS = 1600;
+const PREP_MS = 1100;
 
-export function StreetScene({ reduced, when, selected, busy, delivered, onPick, onSkip, menuOpen }) {
+/** Cuanto se aparta el local al abrirse la carta en escritorio. */
+const ASIDE = 0.26;
+
+export function StreetScene({ reduced, when, selected, busy, delivered, onPick, menuOpen }) {
   const sectionRef = useRef(null);
   const { vw, vh } = useViewport();
   const camera = useMemo(() => makeCamera(vw, vh), [vw, vh]);
-  const plate = PLATES[when];
-  const edge = PLATE_EDGE[when];
+  const night = when === 'noche';
+  const plate = camera.g.art[when];
+  const edge = camera.g.edge[when];
+  const split = !camera.portrait;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -36,8 +48,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
    * Hace falta porque bloquear el scroll de la pagina obliga a poner el body
    * en position:fixed, y eso deja window.scrollY en cero: si la camara leyera
    * el scroll directamente, al abrir la carta el local se alejaria de golpe
-   * hasta el plano general. Congelando el valor, la escena se queda donde
-   * estaba y al cerrar sigue donde la dejamos.
+   * hasta el plano general.
    */
   const drive = useMotionValue(reduced ? 1 : 0);
   const frozen = useRef(false);
@@ -55,22 +66,34 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
     if (!menuOpen) drive.set(scrollYProgress.get());
   }, [menuOpen, reduced, drive, scrollYProgress]);
 
-  useEffect(() => {
-    if (!reduced) drive.set(scrollYProgress.get());
-  }, [reduced, drive, scrollYProgress]);
-
-  // Avance de camara: 0 en el plano general, 1 en el plano cercano. Es una
-  // lectura del scroll, no una animacion disparada, asi que subir lo revierte.
+  // Avance de camara: 0 en el plano general, 1 en el plano cercano.
   const approach = useTransform(drive, [PHASE.wideUntil, PHASE.readyFrom], [0, 1], {
     clamp: true,
   });
   const t = useTransform(approach, easeApproach);
 
-  const scale = useTransform(t, (v) => camera.at(v).scale);
-  const x = useTransform(t, (v) => camera.at(v).x);
-  const y = useTransform(t, (v) => camera.at(v).y);
+  // En escritorio, al abrir la carta el local se va a la izquierda y le deja
+  // la mitad derecha de la pantalla. En movil no cabe, asi que no se mueve.
+  const aside = useMotionValue(0);
+  useEffect(() => {
+    const target = split && menuOpen ? ASIDE : 0;
+    const from = aside.get();
+    if (from === target) return undefined;
+    let raf = 0;
+    const t0 = performance.now();
+    const dur = 620;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      aside.set(from + (target - from) * e);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [split, menuOpen, aside]);
 
-  // Las capas del local relevan a la plancha a mitad de camino.
+  const pose = useCameraPose(camera, t, aside);
+
   const facadeOpacity = useTransform(t, [0.4, 0.66], [0, 1]);
   /**
    * La plancha se va a desenfoque ANTES del relevo, no despues.
@@ -82,7 +105,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
    */
   const blurOpacity = useTransform(t, [0.3, 0.56, 1], [0, 0.8, 0.92]);
 
-  // Primer plano: crece mas deprisa que el resto y se sale por abajo.
+  // Unica capa a distinta profundidad: crece mas deprisa y se sale por abajo.
   const fgScale = useTransform(t, [0, 0.55], [1, 1.55]);
   const fgY = useTransform(t, [0, 0.55], ['0%', '58%']);
   const fgOpacity = useTransform(t, [0.18, 0.5], [1, 0]);
@@ -90,10 +113,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
 
   const [phase, setPhase] = useState(reduced ? 'ready' : 'wide');
   useMotionValueEvent(drive, 'change', (v) => {
-    setPhase((prev) => {
-      const next = phaseOf(v);
-      return next === prev ? prev : next;
-    });
+    setPhase((prev) => (phaseOf(v) === prev ? prev : phaseOf(v)));
   });
   useEffect(() => {
     if (reduced) setPhase('ready');
@@ -103,10 +123,11 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
     if (reduced) return;
     const el = sectionRef.current;
     if (!el) return;
-    const end = el.offsetTop + el.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: end, behavior: 'smooth' });
-    onSkip?.();
-  }, [reduced, onSkip]);
+    window.scrollTo({
+      top: el.offsetTop + el.offsetHeight - window.innerHeight,
+      behavior: 'smooth',
+    });
+  }, [reduced]);
 
   const ready = phase === 'ready';
 
@@ -115,7 +136,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
       ref={sectionRef}
       className="scene"
       style={{
-        height: reduced ? '100vh' : `${SCENE_VH}vh`,
+        height: reduced ? '100vh' : `${SCENE_VH[camera.set]}vh`,
         '--sky': edge.sky,
         '--floor': edge.floor,
       }}
@@ -128,9 +149,9 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
           style={{
             width: camera.baseW,
             height: camera.baseH,
-            x,
-            y,
-            scale,
+            x: pose.x,
+            y: pose.y,
+            scale: pose.scale,
             transformOrigin: '0 0',
           }}
         >
@@ -144,31 +165,26 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
           />
 
           <Facade
+            box={camera.g.facade}
             opacity={facadeOpacity}
             phase={phase}
-            night={when === 'noche'}
+            night={night}
             selected={selected}
             busy={busy}
             delivered={delivered}
             onPick={onPick}
           />
 
-          {/* Unica capa a distinta profundidad: crece mas deprisa que la
-              fachada y se sale por abajo. Lo demas (local y vecinos) esta en
-              el mismo plano de fachada, asi que entre ellos no hay paralaje. */}
           <motion.img
             className="plate-foreground"
             src={plate.primerPlano}
             alt=""
             draggable={false}
-            style={{
-              scale: fgScale,
-              y: fgY,
-              opacity: fgOpacity,
-              transformOrigin: '50% 100%',
-            }}
+            style={{ scale: fgScale, y: fgY, opacity: fgOpacity, transformOrigin: '50% 100%' }}
           />
         </motion.div>
+
+        {!reduced && <Tram t={t} night={night} />}
 
         <motion.div className="vignette" style={{ opacity: vignette }} aria-hidden />
 
@@ -188,14 +204,45 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
   );
 }
 
+/**
+ * La posicion de camara depende de dos valores a la vez: el avance del scroll
+ * y cuanto se ha apartado el local para dejar sitio a la carta. `useTransform`
+ * solo encadena uno, asi que se recalculan los tres juntos cuando cambia
+ * cualquiera de los dos.
+ */
+function useCameraPose(camera, t, aside) {
+  const scale = useMotionValue(1);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  useEffect(() => {
+    const update = () => {
+      const p = camera.at(t.get(), aside.get());
+      scale.set(p.scale);
+      x.set(p.x);
+      y.set(p.y);
+    };
+    update();
+    const offT = t.on('change', update);
+    const offAside = aside.on('change', update);
+    return () => {
+      offT();
+      offAside();
+    };
+  }, [camera, t, aside, scale, x, y]);
+
+  return { scale, x, y };
+}
+
 function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen, onSkip, onPick }) {
   const heroOpacity = useTransform(t, [0, 0.18], [1, 0]);
   const scrimOpacity = useTransform(t, [0.5, 0.95], [0, 1]);
-
   const showPrompt = ready && !busy && !delivered && !menuOpen;
 
   return (
-    <div className="overlays" aria-live="polite">
+    <div className={`overlays${menuOpen ? ' overlays--carta' : ''}`} aria-live="polite">
+      <motion.div className="top-scrim" style={{ opacity: heroOpacity }} aria-hidden />
+
       <motion.div className="hero" style={{ opacity: heroOpacity }} aria-hidden={ready}>
         <p className="hero-line">Todo empieza con hambre</p>
         {!reduced && <p className="hero-hint">Haz scroll para acercarte</p>}
@@ -208,7 +255,7 @@ function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen,
           className="prompt"
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
         >
           <p className="prompt-title">&iquest;Pizza o bocata?</p>
           <div className="prompt-actions">

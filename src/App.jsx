@@ -8,8 +8,8 @@ import { useTimeOfDay } from './hooks/useTimeOfDay';
  * Orden de los estados al elegir una maquina:
  *   pick -> busy (la maquina prepara) -> delivered (sale el cocinero)
  *                                     -> se abre la carta
- * Al cerrar la carta el cocinero se retira y el local vuelve a quedar listo,
- * con el mismo encuadre cercano.
+ * En escritorio la carta no tapa el local: este se aparta a la izquierda y
+ * sigue viendose trabajar mientras se lee lo que hay.
  */
 export default function App() {
   const reduced = usePrefersReducedMotion();
@@ -34,13 +34,15 @@ export default function App() {
       setSelected(kind);
       setBusy(true);
 
-      const prep = reduced ? 300 : PREP_MS;
+      const prep = reduced ? 250 : PREP_MS;
       timers.current.push(
         setTimeout(() => {
           setBusy(false);
           setDelivered(kind);
         }, prep),
-        setTimeout(() => setMenu(kind), prep + (reduced ? 150 : 1400))
+        // La carta entra casi pisando al cocinero: en escritorio se apartan
+        // a la vez, el local a la izquierda y la carta desde la derecha.
+        setTimeout(() => setMenu(kind), prep + (reduced ? 120 : 420))
       );
     },
     [busy, delivered, reduced, clearTimers]
@@ -49,8 +51,6 @@ export default function App() {
   const closeMenu = useCallback(() => {
     clearTimers();
     setMenu(null);
-    // El cocinero se retira un poco despues, para que no desaparezca de golpe
-    // a la vez que el panel.
     timers.current.push(
       setTimeout(() => {
         setDelivered(null);

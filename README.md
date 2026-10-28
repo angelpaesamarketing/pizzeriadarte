@@ -25,11 +25,53 @@ Fases (`src/scene/geometry.js`):
 
 | Progreso    | Que pasa                                                  |
 |-------------|-----------------------------------------------------------|
-| 0 – 0,06    | Plano general. «Todo empieza con hambre».                  |
-| 0,06 – 0,40 | La camara avanza. Las vias se salen por abajo (paralaje).  |
-| 0,40 – 0,66 | Las capas del local relevan a la panoramica.               |
-| 0,66 – 0,88 | Empuje final hasta el plano cercano.                       |
-| 0,88 – 1    | Local listo: se encienden las maquinas y se pueden pulsar. |
+| 0 – 0,05    | Plano general. «Todo empieza con hambre».                  |
+| 0,05 – 0,30 | La camara avanza. Las vias se salen por abajo (paralaje).  |
+| 0,30 – 0,42 | Cruza el tranvia por delante.                              |
+| 0,40 – 0,66 | Las capas del local relevan a la calle.                    |
+| 0,66 – 0,90 | Empuje final hasta el plano cercano.                       |
+| 0,90 – 1    | Local listo: se encienden las maquinas y se pueden pulsar. |
+
+El recorrido son 150vh en escritorio, o sea medio viewport de scroll util: un
+solo gesto de rueda o de trackpad llega al local. En movil son 200vh, porque
+deslizar es barato y un recorrido muy corto se pasa de largo sin querer.
+
+## Dos juegos de plancha
+
+La panoramica apaisada arranca a media fachada, sin tejado ni cielo. En un
+movil alto no hay nada que ensenar por arriba, asi que el edificio sale
+cortado. Por eso hay un segundo juego de imagenes **vertical** que trae el
+edificio entero, y `plateSetFor()` elige segun la orientacion.
+
+Cada juego tiene su propia caja de fachada medida, porque encuadran el local
+en sitios distintos. Lo demas -maquinas, cocinero, huecos- se deriva de esa
+caja y vale para los dos.
+
+En vertical, el recorte sobrante se manda **abajo**, no se reparte: arriba
+esta el tejado, que es lo que da a entender que es un edificio entero; abajo
+solo hay acera.
+
+## El tranvia
+
+Cruza por delante durante el acercamiento. Va en coordenadas de pantalla, no
+del mundo: esta mucho mas cerca de la camara que la fachada, asi que ni
+comparte lienzo ni hereda su escala.
+
+El desenfoque de movimiento se pone por CSS, no en el asset, para que
+acompane a la velocidad en vez de ser una cantidad fija pintada en la imagen.
+El alto y el desplome estan calculados para que las ruedas caigan sobre las
+vias: en el asset el cuerpo acaba al 73,4% del alto, asi que por debajo le
+sobra un 26,6% que hay que sacar fuera de la pantalla.
+
+## El plano partido de escritorio
+
+Al elegir maquina, el local se aparta a la izquierda y la carta entra por la
+derecha, asi que se ven las dos cosas a la vez: la maquina trabajando y lo que
+se puede pedir. El desplazamiento es un parametro mas de la camara (`aside`),
+no una animacion aparte, de modo que no puede descolgarse del acercamiento.
+
+En movil no cabe, asi que la carta sigue siendo un panel de abajo y el local
+no se mueve.
 
 ## De donde salen los numeros
 

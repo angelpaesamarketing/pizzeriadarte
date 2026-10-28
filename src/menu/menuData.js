@@ -3,6 +3,10 @@
  *
  * Precios y nombres son de ejemplo: cambialos aqui y la carta se actualiza
  * sola en la web. Las dos categorias se corresponden con las dos maquinas.
+ *
+ * Cada articulo admite `foto`: la ruta de su imagen en /assets/carta/. Si no
+ * la tiene, se muestra solo con texto, asi que se pueden ir anadiendo una a
+ * una sin romper nada.
  */
 export const MENU = {
   pizza: {

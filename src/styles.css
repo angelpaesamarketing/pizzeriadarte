@@ -238,6 +238,29 @@ img {
 }
 
 /* --- Textos sobre la escena ------------------------------------------- */
+/* El tranvia va en coordenadas de pantalla, no del mundo: esta mucho mas
+   cerca de la camara que la fachada, asi que no hereda su escala. */
+.tram {
+  position: absolute;
+  left: 0;
+  width: auto;
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+  /* Alto y desplome calculados para que las RUEDAS caigan sobre las vias:
+     en el asset el cuerpo acaba al 73,4% del alto, asi que por debajo le
+     sobra un 26,6% que hay que sacar fuera de la pantalla. Sin esto el
+     tranvia flota a media altura sobre los escaparates. */
+  height: 78%;
+  bottom: -9%;
+}
+
+@media (orientation: portrait) {
+  .tram {
+    height: 60%;
+    bottom: -12%;
+  }
+}
+
 .vignette {
   position: absolute;
   inset: 0;
@@ -279,6 +302,13 @@ img {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   opacity: 0.82;
+}
+
+.top-scrim {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 34%;
+  background: linear-gradient(to bottom, rgba(10, 11, 13, 0.55), rgba(10, 11, 13, 0));
 }
 
 .bottom-scrim {
@@ -469,6 +499,15 @@ img {
   list-style: none;
 }
 
+.producto-foto {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(243, 234, 217, 0.06);
+}
+
 .menu-section li {
   display: flex;
   gap: 1rem;
@@ -508,6 +547,34 @@ img {
   .menu-art {
     width: 56px;
     height: 56px;
+  }
+}
+
+/* En escritorio la carta ocupa la mitad derecha y el local se aparta a la
+   izquierda, asi que se ven las dos cosas a la vez: la maquina trabajando y
+   lo que se puede pedir. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .menu {
+    left: auto;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: min(46vw, 34rem);
+    max-height: none;
+    margin: 0;
+    border-radius: 18px 0 0 18px;
+    box-shadow: -18px 0 60px rgba(0, 0, 0, 0.55);
+  }
+
+  .menu-backdrop {
+    background: linear-gradient(to right, rgba(8, 9, 11, 0) 40%, rgba(8, 9, 11, 0.45) 100%);
+    backdrop-filter: none;
+  }
+
+  /* El texto de abajo estorbaria al local apartado. */
+  .overlays--carta .bottom-scrim,
+  .overlays--carta .prompt {
+    opacity: 0;
   }
 }
 

@@ -69,6 +69,15 @@ export function MenuPanel({ category, onClose }) {
                   <ul>
                     {section.items.map((item) => (
                       <li key={item.name}>
+                        {item.foto && (
+                          <img
+                            className="producto-foto"
+                            src={item.foto}
+                            alt={item.name}
+                            loading="lazy"
+                            draggable={false}
+                          />
+                        )}
                         <div>
                           <p className="item-name">{item.name}</p>
                           <p className="item-desc">{item.desc}</p>
