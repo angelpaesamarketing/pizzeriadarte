@@ -56,18 +56,8 @@ export function Chef({ kind, visible }) {
         opacity: { duration: visible ? 0.28 : 0.2 },
       }}
     >
-      <motion.img
-        className="chef-art"
-        src={CHEF_ART[kind]}
-        alt=""
-        draggable={false}
-        animate={visible ? { y: [0, -5, 0] } : { y: 0 }}
-        transition={
-          visible
-            ? { duration: 3.4, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }
-            : { duration: 0.2 }
-        }
-      />
+      {/* Quieto: una vez fuera, se queda plantado en el suelo. */}
+      <img className="chef-art" src={CHEF_ART[kind]} alt="" draggable={false} />
     </motion.div>
   );
 }

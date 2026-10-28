@@ -32,9 +32,14 @@ Fases (`src/scene/geometry.js`):
 | 0,66 – 0,90 | Empuje final hasta el plano cercano.                       |
 | 0,90 – 1    | Local listo: se encienden las maquinas y se pueden pulsar. |
 
-El recorrido son 150vh en escritorio, o sea medio viewport de scroll util: un
-solo gesto de rueda o de trackpad llega al local. En movil son 200vh, porque
-deslizar es barato y un recorrido muy corto se pasa de largo sin querer.
+El recorrido son 150vh en escritorio y 200vh en movil.
+
+En escritorio, ademas, **un solo golpe de rueda recorre la calle entera**
+(`useOneScrollJump`). No se bloquea la rueda ni se llama a preventDefault:
+mientras dura el viaje se fija la posicion de scroll cada fotograma, asi que
+manda la animacion; si se gira la rueda hacia arriba, se cancela y se devuelve
+el control en el acto. En tactil no se activa, porque ahi un deslizamiento ya
+recorre pantalla de sobra y adelantarse seria quitarle el control al dedo.
 
 ## Dos juegos de plancha
 
@@ -141,7 +146,14 @@ atenuan: estan dentro, bajo los focos.
 
 ## La carta
 
-En `src/menu/menuData.js`. Nombres y precios son de ejemplo.
+En `src/menu/menuData.js`: 36 pizzas y 19 bocadillos, transcritos de
+pizzeria24horas.com. **Los precios no figuran en esa web**, asi que van
+vacios; `precio` es opcional y los articulos sin el se muestran solo con
+nombre e ingredientes.
+
+Cada articulo admite tambien `foto`, la ruta de su imagen en
+`/assets/carta/`. Tambien es opcional, de modo que se pueden ir anadiendo una
+a una sin romper nada.
 
 ## Assets
 

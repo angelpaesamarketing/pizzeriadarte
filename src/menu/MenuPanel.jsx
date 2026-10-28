@@ -68,21 +68,21 @@ export function MenuPanel({ category, onClose }) {
                   <h3>{section.name}</h3>
                   <ul>
                     {section.items.map((item) => (
-                      <li key={item.name}>
+                      <li key={item.nombre}>
                         {item.foto && (
                           <img
                             className="producto-foto"
                             src={item.foto}
-                            alt={item.name}
+                            alt={item.nombre}
                             loading="lazy"
                             draggable={false}
                           />
                         )}
                         <div>
-                          <p className="item-name">{item.name}</p>
-                          <p className="item-desc">{item.desc}</p>
+                          <p className="item-name">{item.nombre}</p>
+                          {item.desc && <p className="item-desc">{item.desc}</p>}
                         </div>
-                        <p className="item-price">{item.price} &euro;</p>
+                        {item.precio && <p className="item-price">{item.precio} &euro;</p>}
                       </li>
                     ))}
                   </ul>

@@ -11,6 +11,7 @@ import { makeCamera, easeApproach } from './camera';
 import { Facade } from './Facade';
 import { Tram } from './Tram';
 import { useViewport } from '../hooks/useViewport';
+import { useOneScrollJump } from '../hooks/useOneScrollJump';
 
 /**
  * Alto de la seccion, es decir cuanto scroll cuesta llegar al local.
@@ -118,6 +119,8 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
   useEffect(() => {
     if (reduced) setPhase('ready');
   }, [reduced]);
+
+  useOneScrollJump({ sectionRef, enabled: !reduced && !menuOpen });
 
   const skip = useCallback(() => {
     if (reduced) return;

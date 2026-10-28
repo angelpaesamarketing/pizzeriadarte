@@ -17,14 +17,14 @@ export function Tram({ t, night }) {
   const mid = (from + to) / 2;
 
   // Entra por la derecha y sale por la izquierda, pasando de largo.
-  const x = useTransform(t, [from, to], ['115%', '-115%'], { clamp: true });
+  const x = useTransform(t, [from, to], ['108%', '-108%'], { clamp: true });
   const opacity = useTransform(
     t,
     [from - 0.015, from + 0.01, to - 0.01, to + 0.015],
     [0, 1, 1, 0]
   );
   // Mas borroso en mitad del paso, que es donde va mas rapido por pantalla.
-  const blur = useTransform(t, [from, mid, to], ['blur(3px)', 'blur(9px)', 'blur(3px)']);
+  const blur = useTransform(t, [from, mid, to], ['blur(1px)', 'blur(3.5px)', 'blur(1px)']);
 
   return (
     <motion.img
