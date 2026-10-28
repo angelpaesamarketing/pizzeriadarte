@@ -489,6 +489,15 @@ img {
   outline: none;
 }
 
+/* En movil sobra: el circulo que late ya lleva al local, y deslizar hace el
+   resto. display:none y no visibility, para que tampoco quede en el
+   recorrido del tabulador. */
+@media (max-width: 899px), (orientation: portrait) {
+  .skip {
+    display: none;
+  }
+}
+
 /* --- La carta --------------------------------------------------------- */
 /* Solo en movil: en escritorio el local se aparta y se ve al cocinero de
    verdad, asi que este no hace falta. */

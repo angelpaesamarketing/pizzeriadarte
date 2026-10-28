@@ -128,7 +128,9 @@ recalcula solo a partir de `FACADE`.
 
 - `prefers-reduced-motion`: se entra directamente al plano cercano y la pagina
   mide exactamente una pantalla, sin recorrido de scroll.
-- Boton «Ir a las maquinas» para saltarse el acercamiento.
+- Boton «Ir a las maquinas» para saltarse el acercamiento, solo en
+  escritorio: en movil sobra, porque el circulo que late ya lleva al local y
+  deslizar hace el resto.
 - No se secuestra la rueda ni se bloquea el scroll normal: la escena es una
   seccion `sticky` gobernada por el progreso de desplazamiento.
 - Las maquinas son botones con etiqueta, alcanzables con el tabulador, y estan
