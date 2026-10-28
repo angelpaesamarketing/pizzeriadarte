@@ -17,6 +17,7 @@ export const MENU = {
     tagline: 'Artesanas, hechas en 3 minutos. A cualquier hora.',
     art: '/assets/pizza.webp',
     chef: '/assets/cocinero-pizza.webp',
+    maquina: '/assets/maquina-pizza.webp',
     sections: [
       {
         name: 'Las de siempre',
@@ -87,6 +88,7 @@ export const MENU = {
     tagline: 'Pan recién horneado y relleno generoso. A cualquier hora.',
     art: '/assets/bocadillo.webp',
     chef: '/assets/cocinero-bocadillo.webp',
+    maquina: '/assets/maquina-bocadillos.webp',
     sections: [
       {
         name: 'De la máquina 24 h',

@@ -13,6 +13,7 @@ export function useBodyScrollLock(locked) {
     if (!locked) return undefined;
 
     const y = window.scrollY;
+    const alFinal = y >= document.documentElement.scrollHeight - window.innerHeight - 2;
     const { body } = document;
     const prev = {
       position: body.style.position,
@@ -31,7 +32,14 @@ export function useBodyScrollLock(locked) {
       body.style.top = prev.top;
       body.style.width = prev.width;
       body.style.overflow = prev.overflow;
-      window.scrollTo(0, y);
+      /**
+       * Si estabamos al final, se vuelve al final de AHORA, no a la cifra
+       * guardada. En movil la altura del viewport cambia mientras la carta
+       * esta abierta, porque la barra del navegador se recoge: restaurar el
+       * numero antiguo dejaba la escena a un scroll de poder elegir maquina.
+       */
+      const fin = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo(0, alFinal ? fin : Math.min(y, fin));
     };
   }, [locked]);
 }

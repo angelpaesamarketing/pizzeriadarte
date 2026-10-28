@@ -12,7 +12,7 @@ import { useCallback, useEffect, useRef } from 'react';
  * Solo para raton y trackpad. En tactil no se activa: ahi un deslizamiento ya
  * recorre pantalla de sobra y adelantarse seria quitarle el control al dedo.
  */
-export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
+export function useOneScrollJump({ sectionRef, enabled, duration = 2100 }) {
   const raf = useRef(0);
   const viajando = useRef(false);
 
@@ -46,8 +46,9 @@ export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
     const t0 = performance.now();
     const paso = (ahora) => {
       const k = Math.min(1, (ahora - t0) / duration);
-      // Arranca y frena suave, para que el tranvia no entre de golpe.
-      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      // Sale ya y frena al llegar. Antes arrancaba despacio tambien, y eso
+      // dejaba un silencio entre el clic y la entrada del tranvia.
+      const e = 1 - Math.pow(1 - k, 3);
       const hasta = destino();
       window.scrollTo(0, desde + (hasta - desde) * e);
       if (k < 1) raf.current = requestAnimationFrame(paso);

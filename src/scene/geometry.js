@@ -20,7 +20,7 @@ export const PLATE_SETS = {
   horizontal: {
     w: 1672,
     h: 941,
-    edge: { dia: { sky: '#a49187', floor: '#a89a95' }, noche: { sky: '#161a24', floor: '#1b1f28' } },
+    edge: { dia: { sky: '#a89489', floor: '#a29591' }, noche: { sky: '#3f3844', floor: '#3a313d' } },
     art: {
       dia: {
         calle: '/assets/calle.webp',
@@ -33,13 +33,13 @@ export const PLATE_SETS = {
         primerPlano: '/assets/calle-primer-plano-noche.webp',
       },
     },
-    facade: { left: 0.4209, top: 0.5161, width: 0.2201, height: 0.3205 },
+    facade: { left: 0.4160, top: 0.5136, width: 0.2265, height: 0.3298 },
     focus: { y: 0.655 },
   },
   vertical: {
     w: 1024,
     h: 1536,
-    edge: { dia: { sky: '#8fb4d8', floor: '#b9b2a8' }, noche: { sky: '#12182a', floor: '#1d2230' } },
+    edge: { dia: { sky: '#84a4d0', floor: '#d2c3bc' }, noche: { sky: '#172f6a', floor: '#9d6f56' } },
     art: {
       dia: {
         calle: '/assets/calle-vertical.webp',
@@ -52,7 +52,7 @@ export const PLATE_SETS = {
         primerPlano: '/assets/calle-vertical-primer-plano-noche.webp',
       },
     },
-    facade: { left: 0.4095, top: 0.6132, width: 0.4359, height: 0.2379 },
+    facade: { left: 0.4095, top: 0.6141, width: 0.4359, height: 0.2379 },
     focus: { y: 0.7163 },
   },
 };
@@ -172,7 +172,7 @@ export const PHASE = {
 };
 
 /** El tranvia cruza en este tramo del acercamiento, y se va enseguida. */
-export const TRAM_PASS = { from: 0.04, to: 0.62 };
+export const TRAM_PASS = { from: 0, to: 0.56 };
 
 export function phaseOf(p) {
   if (p < PHASE.wideUntil) return 'wide';

@@ -10,6 +10,15 @@ const CHEF_ART = {
 /** Alto del cocinero respecto a su maquina. */
 const CHEF_SCALE = 0.82;
 
+/**
+ * Cuanto adelanta los pies respecto al fondo del hueco.
+ *
+ * Plantado justo en el fondo queda sobre el suelo oscuro del portal, donde la
+ * sombra no se ve y parece flotar. Un poco mas adelante pisa el escalon
+ * iluminado y ahi si se lee el contacto.
+ */
+const PISO = 1.05;
+
 const pct = (n) => `${n * 100}%`;
 
 /**
@@ -26,7 +35,7 @@ export function Chef({ kind, visible }) {
   const width = height * FACADE_BOX_AR * FIGURE_AR;
   const mouthX = box.left + mouth.x * box.width;
   const mouthY = box.top + mouth.y * box.height;
-  const feetY = box.top + box.height; // pisa el suelo del hueco
+  const feetY = box.top + box.height * PISO;
 
   // Con el origen en los pies, encoger lo deja clavado en el suelo; este
   // desplazamiento lo sube hasta la boca del horno para el estado "dentro".

@@ -27,7 +27,7 @@ Fases (`src/scene/geometry.js`):
 |-------------|-----------------------------------------------------------|
 | 0 – 0,05    | Plano general. «Todo empieza con hambre».                  |
 | 0,05 – 0,30 | La camara avanza por la calle.                             |
-| 0,30 – 0,42 | Cruza el tranvia por delante.                              |
+| 0,00 – 0,33 | Cruza el tranvia por delante, desde el primer momento.     |
 | 0,40 – 0,66 | Las capas del local relevan a la calle.                    |
 | 0,66 – 0,90 | Empuje final hasta el plano cercano.                       |
 | 0,90 – 1    | Local listo: se encienden las maquinas y se pueden pulsar. |
@@ -73,6 +73,18 @@ acompane a la velocidad en vez de ser una cantidad fija pintada en la imagen.
 El alto y el desplome estan calculados para que las ruedas caigan sobre las
 vias: en el asset el cuerpo acaba al 73,4% del alto, asi que por debajo le
 sobra un 26,6% que hay que sacar fuera de la pantalla.
+
+## Por que el cocinero no lleva `will-change`
+
+Promocionarlo a capa propia hace que el navegador lo rasterice a su tamano
+**sin escalar** y luego amplie ese mapa de bits con el zoom del mundo: sale
+borroso al lado de las maquinas, que no estan promocionadas y se rasterizan
+ya a la escala final. Lo mismo vale para cualquier cosa que se meta dentro
+de `.world`.
+
+Y los pies van un 5% por delante del fondo del hueco: plantado justo al
+fondo queda sobre el suelo oscuro del portal, donde la sombra de contacto no
+se ve y parece flotar aunque este bien colocado.
 
 ## El plano partido de escritorio
 

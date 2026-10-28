@@ -197,18 +197,21 @@ img {
 .chef {
   position: absolute;
   pointer-events: none;
-  will-change: transform, opacity;
+  /* Sin will-change a proposito: promocionarlo a capa propia hace que el
+     navegador lo rasterice a su tamano sin escalar y luego amplie ese mapa de
+     bits con el zoom del mundo, y sale borroso al lado de las maquinas, que
+     no estan promocionadas. */
 }
 
 /* Elipse difusa bajo los pies: es lo que lo asienta en el suelo. */
 .chef-sombra {
   position: absolute;
-  left: 14%;
-  bottom: -1%;
-  width: 72%;
-  height: 9%;
+  left: 4%;
+  bottom: -2.5%;
+  width: 92%;
+  height: 13%;
   border-radius: 50%;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0) 72%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0) 70%);
   pointer-events: none;
 }
 
@@ -217,14 +220,6 @@ img {
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
-}
-
-.oven-product {
-  position: absolute;
-  height: auto;
-  pointer-events: none;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
-  will-change: transform, opacity;
 }
 
 .opening-hit {
@@ -501,12 +496,16 @@ img {
   display: none;
 }
 
+.menu-maquina {
+  display: none;
+}
+
 @media (max-width: 899px), (orientation: portrait) {
-  .menu-chef {
+  .menu-chef,
+  .menu-maquina {
     display: block;
     position: fixed;
     z-index: 12;
-    right: 4vw;
     bottom: calc(76svh - 10px);
     /* Medido en alto de pantalla, no en ancho: lo que le deja sitio es el
        hueco que queda por encima del panel, y en un movil corto ese hueco
@@ -515,6 +514,17 @@ img {
     width: auto;
     pointer-events: none;
     filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+  }
+
+  /* La maquina detras y a la derecha; el cocinero delante, entregando. */
+  .menu-maquina {
+    right: 3vw;
+    z-index: 11;
+    height: min(24svh, 205px);
+  }
+
+  .menu-chef {
+    right: calc(3vw + min(11svh, 94px));
   }
 }
 
@@ -691,30 +701,7 @@ img {
     box-shadow: -18px 0 60px rgba(0, 0, 0, 0.55);
   }
 
-  /* Solo en movil: en escritorio el local se aparta y se ve al cocinero de
-   verdad, asi que este no hace falta. */
-.menu-chef {
-  display: none;
-}
-
-@media (max-width: 899px), (orientation: portrait) {
-  .menu-chef {
-    display: block;
-    position: fixed;
-    z-index: 12;
-    right: 4vw;
-    bottom: calc(76svh - 10px);
-    /* Medido en alto de pantalla, no en ancho: lo que le deja sitio es el
-       hueco que queda por encima del panel, y en un movil corto ese hueco
-       es pequeno. Con un ancho fijo se le cortaba el gorro. */
-    height: min(21svh, 180px);
-    width: auto;
-    pointer-events: none;
-    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
-  }
-}
-
-.menu-backdrop {
+  .menu-backdrop {
     background: linear-gradient(to right, rgba(8, 9, 11, 0) 40%, rgba(8, 9, 11, 0.45) 100%);
     backdrop-filter: none;
   }

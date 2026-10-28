@@ -40,8 +40,19 @@ export function MenuPanel({ category, onClose }) {
             transition={{ duration: 0.3 }}
             onClick={onClose}
           />
-          {/* En movil la carta tapa el local, asi que el cocinero se asoma
-              por encima del panel para seguir entregando lo que has pedido. */}
+          {/* En movil la carta tapa el local, asi que la maquina elegida y su
+              cocinero se asoman por encima del panel. */}
+          <motion.img
+            className="menu-maquina"
+            src={data.maquina}
+            alt=""
+            aria-hidden
+            draggable={false}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 27 }}
+          />
           <motion.img
             className="menu-chef"
             src={data.chef}

@@ -34,15 +34,14 @@ export default function App() {
       setSelected(kind);
       setBusy(true);
 
-      const prep = reduced ? 250 : PREP_MS;
+      // La carta se abre ya, sin esperar: la maquina sigue preparando y el
+      // cocinero sale detras, mientras tanto se puede ir leyendo.
+      setMenu(kind);
       timers.current.push(
         setTimeout(() => {
           setBusy(false);
           setDelivered(kind);
-        }, prep),
-        // La carta entra casi pisando al cocinero: en escritorio se apartan
-        // a la vez, el local a la izquierda y la carta desde la derecha.
-        setTimeout(() => setMenu(kind), prep + (reduced ? 120 : 420))
+        }, reduced ? 250 : PREP_MS)
       );
     },
     [busy, delivered, reduced, clearTimers]
