@@ -55,7 +55,12 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
   const frozen = useRef(false);
 
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    if (!reduced && !frozen.current) drive.set(v);
+    if (reduced || frozen.current) return;
+    // Al final del documento el acercamiento esta terminado, aunque el
+    // progreso medido se quede algo corto: en movil la altura del viewport
+    // cambia sola al recogerse la barra del navegador y la cuenta no cuadra.
+    const fin = document.documentElement.scrollHeight - window.innerHeight;
+    drive.set(window.scrollY >= fin - 2 ? 1 : v);
   });
 
   useEffect(() => {
@@ -106,10 +111,6 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
    */
   const blurOpacity = useTransform(t, [0.3, 0.56, 1], [0, 0.8, 0.92]);
 
-  // Unica capa a distinta profundidad: crece mas deprisa y se sale por abajo.
-  const fgScale = useTransform(t, [0, 0.55], [1, 1.55]);
-  const fgY = useTransform(t, [0, 0.55], ['0%', '58%']);
-  const fgOpacity = useTransform(t, [0.18, 0.5], [1, 0]);
   const vignette = useTransform(t, [0.45, 1], [0, 1]);
 
   const [phase, setPhase] = useState(reduced ? 'ready' : 'wide');
@@ -173,13 +174,9 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
             onPick={onPick}
           />
 
-          <motion.img
-            className="plate-foreground"
-            src={plate.primerPlano}
-            alt=""
-            draggable={false}
-            style={{ scale: fgScale, y: fgY, opacity: fgOpacity, transformOrigin: '50% 100%' }}
-          />
+          {/* La acera y las vias acompanan al resto del mundo, sin vida
+              propia: quien marca el cambio de plano es el tranvia. */}
+          <img className="plate-foreground" src={plate.primerPlano} alt="" draggable={false} />
         </motion.div>
 
         {!reduced && <Tram t={t} night={night} />}

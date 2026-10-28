@@ -26,7 +26,7 @@ Fases (`src/scene/geometry.js`):
 | Progreso    | Que pasa                                                  |
 |-------------|-----------------------------------------------------------|
 | 0 – 0,05    | Plano general. «Todo empieza con hambre».                  |
-| 0,05 – 0,30 | La camara avanza. Las vias se salen por abajo (paralaje).  |
+| 0,05 – 0,30 | La camara avanza por la calle.                             |
 | 0,30 – 0,42 | Cruza el tranvia por delante.                              |
 | 0,40 – 0,66 | Las capas del local relevan a la calle.                    |
 | 0,66 – 0,90 | Empuje final hasta el plano cercano.                       |
@@ -61,7 +61,10 @@ solo hay acera.
 
 ## El tranvia
 
-Cruza por delante durante el acercamiento. Va en coordenadas de pantalla, no
+Cruza por delante durante el acercamiento, y es **el que marca el cambio de
+plano**: la acera y las vias no tienen animacion propia, acompanan al resto
+del mundo. Antes se iban por abajo con un paralaje que, con el tranvia
+delante, sobraba. Va en coordenadas de pantalla, no
 del mundo: esta mucho mas cerca de la camara que la fachada, asi que ni
 comparte lienzo ni hereda su escala.
 

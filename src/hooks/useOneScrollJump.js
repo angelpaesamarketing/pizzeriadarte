@@ -22,12 +22,25 @@ export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
   }, []);
 
   /** Recorre la calle entera hasta las maquinas. Lo usan la rueda y el clic. */
-  const viajar = useCallback(() => {
+  /**
+   * El destino se recalcula en cada fotograma, no se fija al empezar.
+   *
+   * En movil la altura del viewport cambia sola mientras se desplaza, porque
+   * la barra del navegador se recoge. Si el destino se calcula una vez al
+   * principio, el viaje se queda corto y el local llega sin estar listo: hay
+   * que dar otro scroll para poder elegir maquina.
+   */
+  const destino = useCallback(() => {
     const el = sectionRef.current;
-    if (!el) return;
-    const hasta = el.offsetTop + el.offsetHeight - window.innerHeight;
+    if (!el) return 0;
+    const finSeccion = el.offsetTop + el.offsetHeight - window.innerHeight;
+    const finPagina = document.documentElement.scrollHeight - window.innerHeight;
+    return Math.min(finSeccion, finPagina);
+  }, [sectionRef]);
+
+  const viajar = useCallback(() => {
     const desde = window.scrollY;
-    if (hasta - desde < 20) return;
+    if (destino() - desde < 20) return;
 
     viajando.current = true;
     const t0 = performance.now();
@@ -35,12 +48,16 @@ export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
       const k = Math.min(1, (ahora - t0) / duration);
       // Arranca y frena suave, para que el tranvia no entre de golpe.
       const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      const hasta = destino();
       window.scrollTo(0, desde + (hasta - desde) * e);
       if (k < 1) raf.current = requestAnimationFrame(paso);
-      else viajando.current = false;
+      else {
+        window.scrollTo(0, destino());
+        viajando.current = false;
+      }
     };
     raf.current = requestAnimationFrame(paso);
-  }, [sectionRef, duration]);
+  }, [destino, duration]);
 
   useEffect(() => {
     if (!enabled) return undefined;
@@ -55,9 +72,8 @@ export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
 
       const el = sectionRef.current;
       if (!el) return;
-      const fin = el.offsetTop + el.offsetHeight - window.innerHeight;
       // Solo desde el principio del recorrido; mas abajo, scroll normal.
-      if (window.scrollY > el.offsetTop + (fin - el.offsetTop) * 0.2) return;
+      if (window.scrollY > el.offsetTop + (destino() - el.offsetTop) * 0.2) return;
 
       viajar();
     };
@@ -67,7 +83,7 @@ export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
       window.removeEventListener('wheel', onWheel);
       cancelAnimationFrame(raf.current);
     };
-  }, [sectionRef, enabled, cancelar, viajar]);
+  }, [sectionRef, enabled, cancelar, viajar, destino]);
 
   return viajar;
 }

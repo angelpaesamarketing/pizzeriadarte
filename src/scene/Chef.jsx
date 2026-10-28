@@ -56,7 +56,10 @@ export function Chef({ kind, visible }) {
         opacity: { duration: visible ? 0.28 : 0.2 },
       }}
     >
-      {/* Quieto: una vez fuera, se queda plantado en el suelo. */}
+      {/* La sombra es lo que lo planta en el suelo: sin ella parece flotar
+          aunque los pies esten donde tienen que estar. */}
+      <span className="chef-sombra" aria-hidden />
+      {/* Quieto: una vez fuera, se queda plantado. */}
       <img className="chef-art" src={CHEF_ART[kind]} alt="" draggable={false} />
     </motion.div>
   );
