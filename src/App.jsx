@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { StreetScene, PREP_MS } from './scene/StreetScene';
 import { MenuPanel } from './menu/MenuPanel';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
+import { useTimeOfDay } from './hooks/useTimeOfDay';
 
 /**
  * Orden de los estados al elegir una maquina:
@@ -12,6 +13,7 @@ import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
  */
 export default function App() {
   const reduced = usePrefersReducedMotion();
+  const when = useTimeOfDay();
 
   const [selected, setSelected] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -61,6 +63,7 @@ export default function App() {
     <main>
       <StreetScene
         reduced={reduced}
+        when={when}
         selected={selected}
         busy={busy}
         delivered={delivered}

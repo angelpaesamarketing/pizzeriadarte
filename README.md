@@ -70,12 +70,50 @@ recalcula solo a partir de `FACADE`.
   deshabilitadas hasta que termina el acercamiento.
 - La carta se cierra con Escape.
 
+## Despliegue en Cloudflare Pages
+
+Ajustes del proyecto:
+
+| Campo                     | Valor           |
+|---------------------------|-----------------|
+| Framework preset          | Vite            |
+| Build command             | `npm run build` |
+| Build output directory    | `dist`          |
+| Node version              | 20 (`.nvmrc`)   |
+
+No hay rutas de cliente, asi que no hace falta `_redirects`. El fichero
+`public/_headers` fija el cacheado: eterno para los bundles con hash, de un dia
+para las imagenes.
+
+## De dia o de noche
+
+La calle se ve como estaria a la hora de quien mira: de noche entre las 20:00 y
+las 07:00. Para revisarlo sin esperar, `?escena=noche` y `?escena=dia`.
+
+La foto nocturna, la de dia y la capa de primer plano comparten lienzo y estan
+registradas al pixel, asi que el primer plano de noche se genera aplicando a la
+foto nocturna el canal alfa del de dia. El marco del local se gradua por CSS
+con la caida de luz medida entre ambas fotos (x0,34-0,43 en la estructura,
+x0,75 en la acera, que alumbran las farolas). Las maquinas y el cocinero no se
+atenuan: estan dentro, bajo los focos.
+
 ## La carta
 
 En `src/menu/menuData.js`. Nombres y precios son de ejemplo.
 
 ## Assets
 
-En `public/assets/`. `calle-primer-plano.webp` (la franja de acera y vias del
-paralaje) y `calle-desenfocada.webp` se generan a partir de `calle.webp`; si se
-cambia la panoramica hay que regenerarlas.
+En `public/assets/`. Se derivan de los demas, y hay que regenerarlos si se
+cambian las fotos de la calle:
+
+- `calle-desenfocada.webp` y `calle-noche-desenfocada.webp`: la misma calle
+  reducida, difuminada y ampliada. Se cruzan por opacidad en vez de animar
+  `filter: blur()`, que en un elemento escalado cuesta caro en GPU.
+- `calle-primer-plano-noche.webp`: la foto nocturna con el alfa del primer
+  plano de dia.
+
+La capa de edificios vecinos **no se usa**: su hueco (x 0,441-0,615) es mas
+estrecho que el rotulo de seto (x 0,421-0,641), asi que puesta por encima le
+cortaria las puntas, y puesta por debajo da la misma imagen que la calle
+completa con el doble de peso. Los vecinos y el local estan en el mismo plano
+de fachada, asi que entre ellos tampoco habria paralaje que ganar.

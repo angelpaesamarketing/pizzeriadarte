@@ -80,14 +80,22 @@ img {
 }
 
 .plate,
+.plate-foreground,
+.backdrop {
+  /* Son decorado. Sin esto, el primer plano -que ocupa todo el lienzo aunque
+     casi todo el sea transparente- se queda con los clics de las maquinas. */
+  pointer-events: none;
+}
+
+.plate,
 .plate-foreground {
   position: absolute;
   left: 0;
   width: 100%;
-  height: auto;
 }
 
-.plate {
+.plate,
+.plate-foreground {
   top: 0;
   height: 100%;
 }
@@ -104,6 +112,27 @@ img {
 .facade {
   position: absolute;
   will-change: opacity;
+}
+
+/* De noche el marco y el rotulo se graduan con la caida real medida entre las
+   dos fotos de la calle (x0,34-0,43 en la estructura, x0,75 en la acera que
+   alumbran las farolas); 0,58 es el punto intermedio. Las maquinas y el
+   cocinero no entran aqui: estan dentro, bajo los focos. */
+.facade--noche .facade-art,
+.facade--noche .facade-shadow {
+  filter: brightness(0.58) saturate(0.88);
+}
+
+/* Los focos que banan el rotulo desde abajo. */
+.sign-light {
+  position: absolute;
+  left: 2%;
+  top: -2%;
+  width: 96%;
+  height: 42%;
+  background: radial-gradient(60% 70% at 50% 85%, rgba(255, 206, 140, 0.5), rgba(255, 190, 110, 0) 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
 .facade-shadow {

@@ -6,7 +6,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { FOREGROUND_TOP, PHASE, PLATE_EDGE, phaseOf } from './geometry';
+import { PHASE, PLATES, PLATE_EDGE, phaseOf } from './geometry';
 import { makeCamera, easeApproach } from './camera';
 import { Facade } from './Facade';
 import { useViewport } from '../hooks/useViewport';
@@ -17,10 +17,12 @@ export const SCENE_VH = 300;
 /** Lo que tarda la maquina en "preparar" antes de que salga el cocinero. */
 const PREP_MS = 1600;
 
-export function StreetScene({ reduced, selected, busy, delivered, onPick, onSkip, menuOpen }) {
+export function StreetScene({ reduced, when, selected, busy, delivered, onPick, onSkip, menuOpen }) {
   const sectionRef = useRef(null);
   const { vw, vh } = useViewport();
   const camera = useMemo(() => makeCamera(vw, vh), [vw, vh]);
+  const plate = PLATES[when];
+  const edge = PLATE_EDGE[when];
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -114,12 +116,12 @@ export function StreetScene({ reduced, selected, busy, delivered, onPick, onSkip
       className="scene"
       style={{
         height: reduced ? '100vh' : `${SCENE_VH}vh`,
-        '--sky': PLATE_EDGE.sky,
-        '--floor': PLATE_EDGE.floor,
+        '--sky': edge.sky,
+        '--floor': edge.floor,
       }}
     >
       <div className="scene-sticky">
-        <img className="backdrop" src="/assets/calle-desenfocada.webp" alt="" draggable={false} />
+        <img className="backdrop" src={plate.desenfocada} alt="" draggable={false} />
 
         <motion.div
           className="world"
@@ -132,10 +134,10 @@ export function StreetScene({ reduced, selected, busy, delivered, onPick, onSkip
             transformOrigin: '0 0',
           }}
         >
-          <img className="plate" src="/assets/calle.webp" alt="" draggable={false} />
+          <img className="plate" src={plate.calle} alt="" draggable={false} />
           <motion.img
             className="plate plate--blur"
-            src="/assets/calle-desenfocada.webp"
+            src={plate.desenfocada}
             alt=""
             draggable={false}
             style={{ opacity: blurOpacity }}
@@ -144,19 +146,22 @@ export function StreetScene({ reduced, selected, busy, delivered, onPick, onSkip
           <Facade
             opacity={facadeOpacity}
             phase={phase}
+            night={when === 'noche'}
             selected={selected}
             busy={busy}
             delivered={delivered}
             onPick={onPick}
           />
 
+          {/* Unica capa a distinta profundidad: crece mas deprisa que la
+              fachada y se sale por abajo. Lo demas (local y vecinos) esta en
+              el mismo plano de fachada, asi que entre ellos no hay paralaje. */}
           <motion.img
             className="plate-foreground"
-            src="/assets/calle-primer-plano.webp"
+            src={plate.primerPlano}
             alt=""
             draggable={false}
             style={{
-              top: `${FOREGROUND_TOP * 100}%`,
               scale: fgScale,
               y: fgY,
               opacity: fgOpacity,

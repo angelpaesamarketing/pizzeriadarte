@@ -15,7 +15,7 @@ const pct = (n) => `${n * 100}%`;
  * camara sin calculos propios. Solo se enciende cuando `ready`, que es lo que
  * marca el final del acercamiento.
  */
-export function Machine({ kind, ready, busy, dimmed }) {
+export function Machine({ kind, night, ready, busy, dimmed }) {
   const box = MACHINE_BOX[kind];
 
   return (
@@ -28,9 +28,11 @@ export function Machine({ kind, ready, busy, dimmed }) {
         height: pct(box.height),
       }}
       animate={{
+        // Las maquinas viven bajo los focos del local, asi que de noche
+        // practicamente no se tocan: lo que se oscurece es el exterior.
         filter: ready
-          ? `brightness(${dimmed ? 0.72 : 1.06}) saturate(1.05)`
-          : 'brightness(0.86) saturate(0.95)',
+          ? `brightness(${(dimmed ? 0.72 : 1.06) * (night ? 0.94 : 1)}) saturate(1.05)`
+          : `brightness(${0.86 * (night ? 0.94 : 1)}) saturate(0.95)`,
         opacity: dimmed ? 0.75 : 1,
       }}
       transition={{ duration: 0.7, ease: 'easeOut' }}

@@ -16,11 +16,28 @@
 export const PLATE = { w: 1672, h: 941 };
 export const PLATE_AR = PLATE.w / PLATE.h; // 1.7768
 
-/** Franja de acera + vias recortada para el paralaje de primer plano. */
-export const FOREGROUND_TOP = 0.735;
+/**
+ * La acera y las vias vienen en su propia capa, con alfa y sobre el mismo
+ * lienzo que la calle, asi que se coloca a pantalla completa y encaja sola.
+ */
+export const PLATES = {
+  dia: {
+    calle: '/assets/calle.webp',
+    desenfocada: '/assets/calle-desenfocada.webp',
+    primerPlano: '/assets/calle-primer-plano.webp',
+  },
+  noche: {
+    calle: '/assets/calle-noche.webp',
+    desenfocada: '/assets/calle-noche-desenfocada.webp',
+    primerPlano: '/assets/calle-primer-plano-noche.webp',
+  },
+};
 
-/** Colores muestreados de los bordes de la plancha, para alargarla en alto. */
-export const PLATE_EDGE = { sky: '#a49187', floor: '#a89a95' };
+/** Colores de los bordes de la plancha, para alargarla en pantallas altas. */
+export const PLATE_EDGE = {
+  dia: { sky: '#a49187', floor: '#a89a95' },
+  noche: { sky: '#161a24', floor: '#1b1f28' },
+};
 
 // --- La fachada dentro del mundo ------------------------------------------
 // Rotulo verde en la panoramica:  x 0.4342..0.6256   y 0.5080..0.6281
@@ -32,10 +49,10 @@ export const PLATE_EDGE = { sky: '#a49187', floor: '#a89a95' };
 // Los valores de abajo salen de medir ambas capas renderizadas por separado
 // en el navegador, no de estimar sobre el fichero.
 export const FACADE = {
-  left: 0.4188,
-  top: 0.5158,
-  width: 0.2224, // fraccion del ANCHO del mundo
-  height: 0.3238, // fraccion del ALTO del mundo (conserva el aspecto 1.2211)
+  left: 0.4209,
+  top: 0.5161,
+  width: 0.2201, // fraccion del ANCHO del mundo
+  height: 0.3205, // fraccion del ALTO del mundo (conserva el aspecto del asset)
 };
 
 /** Punto al que apunta la camara: el centro del local, no el de la imagen. */
@@ -47,8 +64,8 @@ export const FOCUS = {
 // --- Los dos huecos de la fachada (fracciones de la caja de fachada) -------
 // Medidos sobre el canal alfa de fachada.webp.
 export const OPENINGS = {
-  pizza: { x0: 0.2114, x1: 0.4798, y0: 0.4238, y1: 0.8493 },
-  bocadillos: { x0: 0.5281, x1: 0.7835, y0: 0.43, y1: 0.8476 },
+  pizza: { x0: 0.2114, x1: 0.4784, y0: 0.4247, y1: 0.8485 },
+  bocadillos: { x0: 0.5303, x1: 0.785, y0: 0.4308, y1: 0.8467 },
 };
 
 // --- Las maquinas dentro de los huecos ------------------------------------

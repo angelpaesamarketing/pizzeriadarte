@@ -19,13 +19,13 @@ const LABEL = {
  * el cambio es un fundido en el sitio: no hay salto de posicion ni de escala,
  * ni dos fachadas a la vez.
  */
-export function Facade({ opacity, phase, selected, busy, delivered, onPick }) {
+export function Facade({ opacity, phase, night, selected, busy, delivered, onPick }) {
   const ready = phase === 'ready';
   const interactive = ready && !busy && !delivered;
 
   return (
     <motion.div
-      className="facade"
+      className={`facade${night ? ' facade--noche' : ''}`}
       style={{
         left: pct(FACADE.left),
         top: pct(FACADE.top),
@@ -52,12 +52,14 @@ export function Facade({ opacity, phase, selected, busy, delivered, onPick }) {
 
       <Machine
         kind="pizza"
+        night={night}
         ready={ready}
         busy={busy && selected === 'pizza'}
         dimmed={Boolean(selected) && selected !== 'pizza'}
       />
       <Machine
         kind="bocadillos"
+        night={night}
         ready={ready}
         busy={busy && selected === 'bocadillos'}
         dimmed={Boolean(selected) && selected !== 'bocadillos'}
@@ -65,6 +67,7 @@ export function Facade({ opacity, phase, selected, busy, delivered, onPick }) {
 
       {/* El marco va por encima: recorta las maquinas y las mete dentro. */}
       <img className="facade-art" src="/assets/fachada.webp" alt="" draggable={false} />
+      {night && <span className="sign-light" aria-hidden />}
 
       <Chef kind="pizza" visible={delivered === 'pizza'} />
       <Chef kind="bocadillos" visible={delivered === 'bocadillos'} />
