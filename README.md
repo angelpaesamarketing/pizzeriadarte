@@ -32,6 +32,10 @@ Fases (`src/scene/geometry.js`):
 | 0,66 – 0,90 | Empuje final hasta el plano cercano.                       |
 | 0,90 – 1    | Local listo: se encienden las maquinas y se pueden pulsar. |
 
+Al elegir una, su horno late sin parar hasta que se cierra la carta, y el de
+la otra se queda quieto. En movil la carta tapa el local, asi que las luces
+laten en la maquina que asoma por encima del panel, que es la que se ve.
+
 El recorrido son 150vh en escritorio y 200vh en movil.
 
 La invitacion de la portada es un **clic**: un circulo blanco que late debajo

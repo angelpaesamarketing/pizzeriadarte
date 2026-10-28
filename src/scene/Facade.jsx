@@ -53,20 +53,17 @@ export function Facade({ box, opacity, phase, night, selected, busy, delivered, 
         />
       ))}
 
-      <Machine
-        kind="pizza"
-        night={night}
-        ready={ready}
-        busy={busy && selected === 'pizza'}
-        dimmed={Boolean(selected) && selected !== 'pizza'}
-      />
-      <Machine
-        kind="bocadillos"
-        night={night}
-        ready={ready}
-        busy={busy && selected === 'bocadillos'}
-        dimmed={Boolean(selected) && selected !== 'bocadillos'}
-      />
+      {['pizza', 'bocadillos'].map((kind) => (
+        <Machine
+          key={kind}
+          kind={kind}
+          night={night}
+          ready={ready}
+          // Desde que se pulsa hasta que se cierra la carta.
+          trabajando={selected === kind && (busy || Boolean(delivered))}
+          dimmed={Boolean(selected) && selected !== kind}
+        />
+      ))}
 
       {/* El marco va por encima: recorta las maquinas y las mete dentro. */}
       <img className="facade-art" src="/assets/fachada.webp" alt="" draggable={false} />

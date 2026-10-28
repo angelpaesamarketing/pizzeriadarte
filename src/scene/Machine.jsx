@@ -15,7 +15,7 @@ const pct = (n) => `${n * 100}%`;
  * camara sin calculos propios. Solo se enciende cuando `ready`, que es lo que
  * marca el final del acercamiento.
  */
-export function Machine({ kind, night, ready, busy, dimmed }) {
+export function Machine({ kind, night, ready, trabajando, dimmed }) {
   const box = MACHINE_BOX[kind];
 
   return (
@@ -39,17 +39,19 @@ export function Machine({ kind, night, ready, busy, dimmed }) {
     >
       <img src={ART[kind]} alt="" draggable={false} />
 
-      {/* Luz calida del horno: respira al llegar, late durante la preparacion. */}
+      {/* Luz calida del horno: respira al llegar y late sin parar mientras la
+          maquina es la elegida, o sea desde que se pulsa hasta que se cierra
+          la carta. */}
       <motion.span
         className={`machine-glow machine-glow--${kind}`}
         animate={
-          busy
+          trabajando
             ? { opacity: [0.5, 1, 0.5], scale: [1, 1.08, 1] }
             : { opacity: ready ? 0.55 : 0, scale: 1 }
         }
         transition={
-          busy
-            ? { duration: 0.9, repeat: Infinity, ease: 'easeInOut' }
+          trabajando
+            ? { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
             : { duration: 0.9, ease: 'easeOut' }
         }
       />
