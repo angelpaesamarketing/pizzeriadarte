@@ -34,8 +34,11 @@ Fases (`src/scene/geometry.js`):
 
 El recorrido son 150vh en escritorio y 200vh en movil.
 
+La invitacion de la portada es un **clic**: un circulo blanco que late debajo
+de «Haz clic para ver la carta» marca donde pulsar y lanza el recorrido.
+
 En escritorio, ademas, **un solo golpe de rueda recorre la calle entera**
-(`useOneScrollJump`). No se bloquea la rueda ni se llama a preventDefault:
+(`useOneScrollJump`), y es el mismo viaje que dispara ese clic. No se bloquea la rueda ni se llama a preventDefault:
 mientras dura el viaje se fija la posicion de scroll cada fotograma, asi que
 manda la animacion; si se gira la rueda hacia arriba, se cancela y se devuelve
 el control en el acto. En tactil no se activa, porque ahi un deslizamiento ya
@@ -151,9 +154,19 @@ pizzeria24horas.com. **Los precios no figuran en esa web**, asi que van
 vacios; `precio` es opcional y los articulos sin el se muestran solo con
 nombre e ingredientes.
 
-Cada articulo admite tambien `foto`, la ruta de su imagen en
-`/assets/carta/`. Tambien es opcional, de modo que se pueden ir anadiendo una
-a una sin romper nada.
+Los 55 articulos llevan su foto en `/assets/carta/`. Son las fichas de la web
+de la pizzeria, recortadas de capturas de pantalla: se detectan las tarjetas
+por columnas y filas (el fondo de pagina es blanco puro) y se recorta cada una
+entera, a 365x288.
+
+Se deja la ficha completa, con el nombre y los ingredientes que la pizzeria
+lleva incrustados en la imagen, porque los recortes que los evitan parten el
+producto o cortan el texto a medias. El nombre y los ingredientes se siguen
+pintando aparte como texto, que es lo que leen el buscador y un lector de
+pantalla.
+
+Si algun dia hay fotos limpias y de mas resolucion, basta con sustituir los
+ficheros: el campo `foto` no cambia.
 
 ## Assets
 

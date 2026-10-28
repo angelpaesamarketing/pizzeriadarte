@@ -120,17 +120,12 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
     if (reduced) setPhase('ready');
   }, [reduced]);
 
-  useOneScrollJump({ sectionRef, enabled: !reduced && !menuOpen });
+  const viajar = useOneScrollJump({ sectionRef, enabled: !reduced && !menuOpen });
 
   const skip = useCallback(() => {
     if (reduced) return;
-    const el = sectionRef.current;
-    if (!el) return;
-    window.scrollTo({
-      top: el.offsetTop + el.offsetHeight - window.innerHeight,
-      behavior: 'smooth',
-    });
-  }, [reduced]);
+    viajar();
+  }, [reduced, viajar]);
 
   const ready = phase === 'ready';
 
@@ -246,9 +241,27 @@ function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen,
     <div className={`overlays${menuOpen ? ' overlays--carta' : ''}`} aria-live="polite">
       <motion.div className="top-scrim" style={{ opacity: heroOpacity }} aria-hidden />
 
-      <motion.div className="hero" style={{ opacity: heroOpacity }} aria-hidden={ready}>
+      <motion.div
+        className="hero"
+        style={{ opacity: heroOpacity, pointerEvents: ready ? 'none' : 'auto' }}
+        aria-hidden={ready}
+      >
         <p className="hero-line">Todo empieza con hambre</p>
-        {!reduced && <p className="hero-hint">Haz scroll para acercarte</p>}
+        {!reduced && (
+          <>
+            <p className="hero-hint">Haz clic para ver la carta</p>
+            <button
+              type="button"
+              className="pulso"
+              onClick={onSkip}
+              aria-label="Ir a las maquinas y ver la carta"
+            >
+              <span className="pulso-onda" aria-hidden />
+              <span className="pulso-onda pulso-onda--tarde" aria-hidden />
+              <span className="pulso-punto" aria-hidden />
+            </button>
+          </>
+        )}
       </motion.div>
 
       <motion.div className="bottom-scrim" style={{ opacity: scrimOpacity }} aria-hidden />

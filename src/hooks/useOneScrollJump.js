@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 /**
  * Con un solo gesto de rueda, por minimo que sea, se recorre la calle entera
@@ -13,54 +13,61 @@ import { useEffect } from 'react';
  * recorre pantalla de sobra y adelantarse seria quitarle el control al dedo.
  */
 export function useOneScrollJump({ sectionRef, enabled, duration = 2800 }) {
+  const raf = useRef(0);
+  const viajando = useRef(false);
+
+  const cancelar = useCallback(() => {
+    cancelAnimationFrame(raf.current);
+    viajando.current = false;
+  }, []);
+
+  /** Recorre la calle entera hasta las maquinas. Lo usan la rueda y el clic. */
+  const viajar = useCallback(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const hasta = el.offsetTop + el.offsetHeight - window.innerHeight;
+    const desde = window.scrollY;
+    if (hasta - desde < 20) return;
+
+    viajando.current = true;
+    const t0 = performance.now();
+    const paso = (ahora) => {
+      const k = Math.min(1, (ahora - t0) / duration);
+      // Arranca y frena suave, para que el tranvia no entre de golpe.
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      window.scrollTo(0, desde + (hasta - desde) * e);
+      if (k < 1) raf.current = requestAnimationFrame(paso);
+      else viajando.current = false;
+    };
+    raf.current = requestAnimationFrame(paso);
+  }, [sectionRef, duration]);
+
   useEffect(() => {
     if (!enabled) return undefined;
     if (!window.matchMedia('(pointer: fine)').matches) return undefined;
 
-    let raf = 0;
-    let viajando = false;
-
-    const cancelar = () => {
-      cancelAnimationFrame(raf);
-      viajando = false;
-    };
-
-    const viajar = (desde, hasta) => {
-      viajando = true;
-      const t0 = performance.now();
-      const paso = (ahora) => {
-        const k = Math.min(1, (ahora - t0) / duration);
-        // Arranca y frena suave, para que el tranvia no entre de golpe.
-        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-        window.scrollTo(0, desde + (hasta - desde) * e);
-        if (k < 1) raf = requestAnimationFrame(paso);
-        else viajando = false;
-      };
-      raf = requestAnimationFrame(paso);
-    };
-
     const onWheel = (e) => {
       if (e.deltaY < 0) {
-        if (viajando) cancelar();
+        if (viajando.current) cancelar();
         return;
       }
-      if (viajando || e.deltaY <= 0) return;
+      if (viajando.current || e.deltaY <= 0) return;
 
       const el = sectionRef.current;
       if (!el) return;
       const fin = el.offsetTop + el.offsetHeight - window.innerHeight;
-      const y = window.scrollY;
       // Solo desde el principio del recorrido; mas abajo, scroll normal.
-      if (y > el.offsetTop + (fin - el.offsetTop) * 0.2) return;
-      if (fin - y < 40) return;
+      if (window.scrollY > el.offsetTop + (fin - el.offsetTop) * 0.2) return;
 
-      viajar(y, fin);
+      viajar();
     };
 
     window.addEventListener('wheel', onWheel, { passive: true });
     return () => {
       window.removeEventListener('wheel', onWheel);
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(raf.current);
     };
-  }, [sectionRef, enabled, duration]);
+  }, [sectionRef, enabled, cancelar, viajar]);
+
+  return viajar;
 }
