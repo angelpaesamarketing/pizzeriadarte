@@ -172,7 +172,7 @@ export const PHASE = {
 };
 
 /** El tranvia cruza en este tramo del acercamiento, y se va enseguida. */
-export const TRAM_PASS = { from: 0, to: 0.56 };
+export const TRAM_PASS = { from: 0, to: 0.72 };
 
 export function phaseOf(p) {
   if (p < PHASE.wideUntil) return 'wide';

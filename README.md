@@ -72,6 +72,16 @@ delante, sobraba. Va en coordenadas de pantalla, no
 del mundo: esta mucho mas cerca de la camara que la fachada, asi que ni
 comparte lienzo ni hereda su escala.
 
+El recorrido se mide contra el ancho de la PANTALLA, no contra el del
+tranvia. Con porcentajes se desplazaba un 108% de su propio ancho a cada
+lado -2.340 px en escritorio- y hacia la mayor parte del camino fuera de
+cuadro: cruzaba en cuatro decimas. Midiendolo asi entra justo por un borde y
+sale por el otro, y tarda 855 ms.
+
+Al entrar suena la campana (): no es un fichero, son cuatro
+senos con los armonicos desafinados, que es lo que hace que suene a metal y
+no a pitido. Si el navegador no deja sonar sin un gesto previo, no pasa nada.
+
 El desenfoque de movimiento se pone por CSS, no en el asset, para que
 acompane a la velocidad en vez de ser una cantidad fija pintada en la imagen.
 El alto y el desplome estan calculados para que las ruedas caigan sobre las

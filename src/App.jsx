@@ -50,6 +50,13 @@ export default function App() {
   const closeMenu = useCallback(() => {
     clearTimers();
     setMenu(null);
+    /**
+     * `busy` se apaga aqui tambien, no solo en el temporizador de la
+     * preparacion. Cerrar la carta antes de que terminase cancelaba ese
+     * temporizador y el local se quedaba en «Preparando...» para siempre,
+     * sin el cartel de elegir y con las maquinas muertas.
+     */
+    setBusy(false);
     timers.current.push(
       setTimeout(() => {
         setDelivered(null);
