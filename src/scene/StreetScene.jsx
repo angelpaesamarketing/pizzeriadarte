@@ -29,7 +29,7 @@ const PREP_MS = 1100;
 /** Cuanto se aparta el local al abrirse la carta en escritorio. */
 const ASIDE = 0.26;
 
-export function StreetScene({ reduced, when, selected, busy, delivered, onPick, menuOpen }) {
+export function StreetScene({ reduced, when, selected, busy, delivered, onPick, onVerMapa, menuOpen, congelada }) {
   const sectionRef = useRef(null);
   const { vw, vh } = useViewport();
   const camera = useMemo(() => makeCamera(vw, vh), [vw, vh]);
@@ -69,9 +69,9 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
       drive.set(1);
       return;
     }
-    frozen.current = menuOpen;
-    if (!menuOpen) drive.set(scrollYProgress.get());
-  }, [menuOpen, reduced, drive, scrollYProgress]);
+    frozen.current = congelada;
+    if (!congelada) drive.set(scrollYProgress.get());
+  }, [congelada, reduced, drive, scrollYProgress]);
 
   // Avance de camara: 0 en el plano general, 1 en el plano cercano.
   const approach = useTransform(drive, [PHASE.wideUntil, PHASE.readyFrom], [0, 1], {
@@ -122,7 +122,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
     if (reduced) setPhase('ready');
   }, [reduced]);
 
-  const viajar = useOneScrollJump({ sectionRef, enabled: !reduced && !menuOpen });
+  const viajar = useOneScrollJump({ sectionRef, enabled: !reduced && !congelada });
 
   const skip = useCallback(() => {
     if (reduced) return;
@@ -197,6 +197,7 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
           menuOpen={menuOpen}
           onSkip={skip}
           onPick={onPick}
+          onVerMapa={onVerMapa}
         />
       </div>
     </section>
@@ -233,7 +234,7 @@ function useCameraPose(camera, t, aside) {
   return { scale, x, y };
 }
 
-function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen, onSkip, onPick }) {
+function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen, onSkip, onPick, onVerMapa }) {
   const heroOpacity = useTransform(t, [0, 0.18], [1, 0]);
   const scrimOpacity = useTransform(t, [0.5, 0.95], [0, 1]);
   const showPrompt = ready && !busy && !delivered && !menuOpen;
@@ -300,6 +301,20 @@ function SceneOverlays({ t, ready, reduced, busy, selected, delivered, menuOpen,
           Ir a las m&aacute;quinas
         </button>
       )}
+
+      {/* Siempre a mano: da igual en que punto del acercamiento estes. */}
+      <button type="button" className="ver-mapa" onClick={onVerMapa}>
+        <svg viewBox="0 0 24 24" aria-hidden focusable="false">
+          <path
+            d="M12 2.6c-3.5 0-6.3 2.8-6.3 6.3 0 4.7 6.3 12.5 6.3 12.5s6.3-7.8 6.3-12.5c0-3.5-2.8-6.3-6.3-6.3Z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+          />
+          <circle cx="12" cy="8.8" r="2.3" fill="currentColor" />
+        </svg>
+        D&oacute;nde estamos
+      </button>
     </div>
   );
 }

@@ -186,6 +186,26 @@ con la caida de luz medida entre ambas fotos (x0,34-0,43 en la estructura,
 x0,75 en la acera, que alumbran las farolas). Las maquinas y el cocinero no se
 atenuan: estan dentro, bajo los focos.
 
+## Donde estamos
+
+Un boton fijo arriba a la derecha despliega el mapa de los siete cajeros de
+Zaragoza, con un enlace de «Como llegar» por cada uno. Los datos estan en
+`src/mapa/cajeros.js`, tomados del mapa que la pizzeria ya tenia en
+pizzeriadarte24h.com: si abre o cierra alguno, se toca solo esa lista.
+
+El mapa es Leaflet con teselas de OpenStreetMap, apagadas por CSS para que no
+deslumbren contra el fondo oscuro, con su atribucion intacta. **Se descarga al
+pedirlo**, no al abrir la web: pesa unos 46 KB comprimidos y vive detras de un
+boton que mucha gente no pulsara.
+
+Los marcadores se dibujan con `divIcon` en vez de usar las chinchetas de
+Leaflet, cuyas imagenes se cargan por ruta relativa y se rompen al empaquetar.
+
+«Como llegar» usa el esquema oficial de URL de Google Maps
+(`/maps/dir/?api=1`), que en movil abre la aplicacion y en escritorio la web,
+sin necesitar clave. No se fija el medio de transporte: a un cajero se puede
+ir andando o en coche segun donde estes.
+
 ## La carta
 
 En `src/menu/menuData.js`: 36 pizzas y 19 bocadillos, transcritos de

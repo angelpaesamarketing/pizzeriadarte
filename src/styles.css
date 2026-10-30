@@ -754,3 +754,245 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* --- Dónde estamos ----------------------------------------------------- */
+.ver-mapa {
+  position: absolute;
+  top: max(0.9rem, env(safe-area-inset-top));
+  right: max(0.9rem, env(safe-area-inset-right));
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.55rem 1rem 0.55rem 0.8rem;
+  border: 1px solid rgba(243, 234, 217, 0.3);
+  border-radius: 999px;
+  background: rgba(20, 22, 26, 0.5);
+  backdrop-filter: blur(6px);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+  opacity: 0.82;
+}
+
+.ver-mapa svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+.ver-mapa:hover,
+.ver-mapa:focus-visible {
+  opacity: 1;
+  border-color: var(--ember);
+  outline: none;
+}
+
+.mapa-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(8, 9, 11, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.mapa {
+  position: fixed;
+  z-index: 21;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;
+  width: min(100vw, 62rem);
+  max-height: 90svh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px 20px 0 0;
+  background: #15181c;
+  box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.mapa-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.05rem 1.25rem;
+  border-bottom: 1px solid rgba(243, 234, 217, 0.12);
+  background: linear-gradient(135deg, rgba(47, 75, 53, 0.55), rgba(21, 24, 28, 0));
+}
+
+.mapa-cabecera h2 {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.4rem;
+}
+
+.mapa-cabecera p {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.mapa-cabecera .menu-close {
+  margin-left: auto;
+}
+
+.mapa-cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.mapa-lienzo {
+  height: 38svh;
+  min-height: 220px;
+  flex: 0 0 auto;
+  background: #10131a;
+  /* Las teselas vienen claras y la web es oscura: se apagan un poco para que
+     no deslumbren, sin tocar la atribucion. */
+  filter: brightness(0.82) saturate(0.85);
+}
+
+.mapa-lista {
+  margin: 0;
+  padding: 0.4rem 0.75rem max(1rem, env(safe-area-inset-bottom));
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+  min-height: 0;
+}
+
+.mapa-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid rgba(243, 234, 217, 0.08);
+  border-radius: 10px;
+}
+
+.mapa-lista li.es-activo {
+  background: rgba(226, 162, 74, 0.12);
+}
+
+.mapa-sitio {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mapa-calle {
+  display: block;
+  font-family: var(--font);
+  font-size: 1rem;
+}
+
+.mapa-nota {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.8rem;
+  opacity: 0.62;
+}
+
+.mapa-ruta {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(243, 234, 217, 0.3);
+  border-radius: 999px;
+  color: var(--cream);
+  font-size: 0.82rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mapa-ruta:hover,
+.mapa-ruta:focus-visible {
+  background: rgba(47, 75, 53, 0.85);
+  border-color: var(--ember);
+  outline: none;
+}
+
+/* Marcadores propios: los de Leaflet cargan sus imagenes por ruta relativa
+   y se rompen al empaquetar. */
+.pin {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--green);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.45);
+}
+
+.pin--obrador {
+  background: var(--ember);
+}
+
+.pin--activo {
+  transform: scale(1.5);
+  box-shadow: 0 0 0 3px rgba(226, 162, 74, 0.55);
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #10131a;
+  font: inherit;
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 11, 13, 0.7) !important;
+  color: rgba(243, 234, 217, 0.7) !important;
+  font-size: 10px;
+}
+
+.leaflet-control-attribution a {
+  color: rgba(243, 234, 217, 0.85) !important;
+}
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .mapa {
+    /* Centrado con margin auto, no con translateY: framer-motion escribe
+       `transform` en lo que anima y se cargaba el centrado, dejando el panel
+       colgando por debajo de la pantalla. */
+    top: 0;
+    bottom: 0;
+    height: min(84svh, 40rem);
+    max-height: none;
+    margin: auto;
+    border-radius: 18px;
+  }
+
+  .mapa-cuerpo {
+    flex-direction: row;
+  }
+
+  .mapa-lienzo {
+    height: auto;
+    flex: 1 1 58%;
+  }
+
+  .mapa-lista {
+    flex: 0 0 42%;
+    border-left: 1px solid rgba(243, 234, 217, 0.1);
+  }
+}

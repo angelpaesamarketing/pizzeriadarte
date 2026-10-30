@@ -1,6 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { StreetScene, PREP_MS } from './scene/StreetScene';
 import { MenuPanel } from './menu/MenuPanel';
+/**
+ * El mapa se descarga al pedirlo, no al abrir la web: Leaflet pesa unos
+ * 46 KB comprimidos y vive detras de un boton que mucha gente no pulsara.
+ */
+const MapaCajeros = lazy(() =>
+  import('./mapa/MapaCajeros').then((m) => ({ default: m.MapaCajeros }))
+);
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import { useTimeOfDay } from './hooks/useTimeOfDay';
 
@@ -19,6 +26,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [delivered, setDelivered] = useState(null);
   const [menu, setMenu] = useState(null);
+  const [mapa, setMapa] = useState(false);
 
   const timers = useRef([]);
   const clearTimers = useCallback(() => {
@@ -74,9 +82,18 @@ export default function App() {
         busy={busy}
         delivered={delivered}
         menuOpen={Boolean(menu)}
+        // El mapa tambien detiene la escena, pero no aparta el local: ocupa
+        // el centro de la pantalla, no la mitad derecha.
+        congelada={Boolean(menu) || mapa}
         onPick={pick}
+        onVerMapa={() => setMapa(true)}
       />
       <MenuPanel category={menu} onClose={closeMenu} />
+      {mapa && (
+        <Suspense fallback={null}>
+          <MapaCajeros abierto={mapa} onClose={() => setMapa(false)} />
+        </Suspense>
+      )}
     </main>
   );
 }
