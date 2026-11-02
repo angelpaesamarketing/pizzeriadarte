@@ -227,8 +227,21 @@ Ademas: titulo y descripcion con la busqueda que interesa, canonical, Open
 Graph para cuando circule por WhatsApp, metadatos geograficos, `robots.txt` y
 `sitemap.xml` (los dos generados al compilar, a partir de la misma URL).
 
-> **Antes de publicar:** cambiar `SITIO.url` por el dominio definitivo. Un
-> subdominio de `pages.dev` no acumula autoridad.
+**Mientras no haya dominio propio, la web no se indexa** (`SITIO.indexable`,
+hoy en `false`): `robots.txt` con `Disallow: /` y etiqueta `noindex`. Si Google
+indexase ahora la direccion de `pages.dev` y manana se mudara al dominio bueno,
+quedarian dos versiones del mismo sitio compitiendo y habria que montar
+redirecciones. Un subdominio de `pages.dev` no iba a posicionar igualmente, asi
+que esperar no cuesta nada.
+
+El dia que el dominio apunte aqui, dos cambios en `src/seo/negocio.js` y ya:
+`SITIO.url` y `SITIO.indexable: true`. De ahi salen solos `robots.txt`, el
+sitemap y la etiqueta. Los dos modos estan probados.
+
+Falta tambien el **telefono**: se deja fuera antes que inventarlo. Cuando lo
+haya, va en `SITIO` y de ahi a los datos estructurados y al pie, porque para la
+busqueda local el nombre, la direccion y el telefono tienen que ser identicos
+en la web y en las fichas de Google.
 
 Y lo que no esta en la web y pesa mas que todo esto junto: las fichas de
 Google Business de los siete puntos.

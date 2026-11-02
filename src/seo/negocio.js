@@ -10,9 +10,22 @@ import { MENU } from '../menu/menuData.js';
  * donde aparece el negocio, y una sola discrepancia le resta confianza.
  */
 export const SITIO = {
-  // OJO: cambiar por el dominio definitivo antes de publicar. Un subdominio
-  // de pages.dev no acumula autoridad y Google lo trata como provisional.
+  // OJO: cambiar por el dominio definitivo cuando lo haya. Un subdominio de
+  // pages.dev no acumula autoridad y Google lo trata como provisional.
   url: 'https://pizzeriadarte.pages.dev',
+
+  /**
+   * Mientras no haya dominio propio, la web NO se indexa.
+   *
+   * Si Google indexa ahora la direccion de pages.dev y manana se muda al
+   * dominio bueno, quedan dos versiones del mismo sitio compitiendo y hay que
+   * montar redirecciones para arreglarlo. Un subdominio de pages.dev no va a
+   * posicionar de todas formas, asi que no se pierde nada esperando.
+   *
+   * Poner en `true` el mismo dia que el dominio apunte aqui. Es lo unico que
+   * hay que tocar: de aqui salen robots.txt, el sitemap y la etiqueta robots.
+   */
+  indexable: false,
   nombre: "Pizzería D'Arte",
   titulo: "Pizzería D'Arte · Pizza 24 horas en Zaragoza",
   descripcion:

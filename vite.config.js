@@ -22,13 +22,24 @@ function seo() {
   return {
     name: 'seo-local',
     transformIndexHtml(html) {
-      const ld = JSON.stringify(datosEstructurados());
-      return html.replace(
-        '</head>',
-        `    <script type="application/ld+json">${ld}</script>\n  </head>`
-      );
+      const trozos = [`    <script type="application/ld+json">${JSON.stringify(
+        datosEstructurados()
+      )}</script>`];
+      // Sin dominio propio, fuera del indice: ver SITIO.indexable.
+      if (!SITIO.indexable) {
+        trozos.unshift('    <meta name="robots" content="noindex, nofollow" />');
+      }
+      return html.replace('</head>', `${trozos.join('\n')}\n  </head>`);
     },
     generateBundle() {
+      if (!SITIO.indexable) {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'robots.txt',
+          source: 'User-agent: *\nDisallow: /\n',
+        });
+        return;
+      }
       this.emitFile({
         type: 'asset',
         fileName: 'robots.txt',
