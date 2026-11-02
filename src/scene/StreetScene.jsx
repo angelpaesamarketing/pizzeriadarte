@@ -57,10 +57,13 @@ export function StreetScene({ reduced, when, selected, busy, delivered, onPick, 
 
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
     if (reduced || frozen.current) return;
-    // Al final del documento el acercamiento esta terminado, aunque el
+    // Al final de la ESCENA el acercamiento esta terminado, aunque el
     // progreso medido se quede algo corto: en movil la altura del viewport
     // cambia sola al recogerse la barra del navegador y la cuenta no cuadra.
-    const fin = document.documentElement.scrollHeight - window.innerHeight;
+    // Se mide contra la seccion y no contra el documento, que debajo lleva
+    // la ficha del negocio y acaba mucho mas abajo.
+    const el = sectionRef.current;
+    const fin = el ? el.offsetTop + el.offsetHeight - window.innerHeight : 0;
     drive.set(window.scrollY >= fin - 2 ? 1 : v);
   });
 

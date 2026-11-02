@@ -206,6 +206,33 @@ Leaflet, cuyas imagenes se cargan por ruta relativa y se rompen al empaquetar.
 sin necesitar clave. No se fija el medio de transporte: a un cajero se puede
 ir andando o en coche segun donde estes.
 
+## SEO local
+
+Una web de una sola pagina gobernada por el scroll es mala para buscar: lo
+que sirve el servidor es `<div id="root"></div>` y nada mas, y la carta y el
+mapa solo se montan al abrirlos. Dos arreglos:
+
+**Datos estructurados** (`src/seo/negocio.js`), inyectados en el HTML al
+compilar y no desde React, para que viajen en lo que sirve el servidor y no
+dependan de que el rastreador ejecute el JavaScript. 17 KB con los 7 locales
+-cada uno con su direccion, sus coordenadas y su horario de 24 h-, la ficha
+del negocio y los 55 productos de la carta.
+
+**La ficha del negocio** (`src/seo/InfoLocal.jsx`), bajo la escena: el unico
+`h1` de la pagina, las 7 direcciones con su enlace de ruta y la carta entera
+en texto. Sirve a quien entra -poder ver una direccion sin jugar con una
+animacion- y al buscador. La pagina pasa de unas 20 palabras a 656.
+
+Ademas: titulo y descripcion con la busqueda que interesa, canonical, Open
+Graph para cuando circule por WhatsApp, metadatos geograficos, `robots.txt` y
+`sitemap.xml` (los dos generados al compilar, a partir de la misma URL).
+
+> **Antes de publicar:** cambiar `SITIO.url` por el dominio definitivo. Un
+> subdominio de `pages.dev` no acumula autoridad.
+
+Y lo que no esta en la web y pesa mas que todo esto junto: las fichas de
+Google Business de los siete puntos.
+
 ## La carta
 
 En `src/menu/menuData.js`: 36 pizzas y 19 bocadillos, transcritos de

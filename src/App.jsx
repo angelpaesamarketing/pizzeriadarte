@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { StreetScene, PREP_MS } from './scene/StreetScene';
 import { MenuPanel } from './menu/MenuPanel';
+import { InfoLocal } from './seo/InfoLocal';
 /**
  * El mapa se descarga al pedirlo, no al abrir la web: Leaflet pesa unos
  * 46 KB comprimidos y vive detras de un boton que mucha gente no pulsara.
@@ -88,6 +89,8 @@ export default function App() {
         onPick={pick}
         onVerMapa={() => setMapa(true)}
       />
+      <InfoLocal />
+
       <MenuPanel category={menu} onClose={closeMenu} />
       {mapa && (
         <Suspense fallback={null}>

@@ -996,3 +996,143 @@ img {
     border-left: 1px solid rgba(243, 234, 217, 0.1);
   }
 }
+
+/* --- La ficha del negocio --------------------------------------------- */
+.info {
+  position: relative;
+  z-index: 2;
+  background: #11141a;
+  border-top: 1px solid rgba(243, 234, 217, 0.1);
+}
+
+.info-dentro {
+  width: min(92vw, 56rem);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 7vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+
+.info h1 {
+  margin: 0;
+  font-family: var(--font);
+  font-size: clamp(1.7rem, 4.4vw, 2.6rem);
+  line-height: 1.15;
+}
+
+.info-entrada {
+  margin: 0.9rem 0 0;
+  max-width: 46rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  line-height: 1.6;
+  opacity: 0.82;
+}
+
+.info-bloque {
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.info-bloque > h2 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+}
+
+.info-bloque > p {
+  margin: 0 0 1.2rem;
+  opacity: 0.72;
+  font-size: 0.95rem;
+}
+
+.info-sitios {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.info-sitios li {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(243, 234, 217, 0.12);
+  border-radius: 12px;
+  background: rgba(243, 234, 217, 0.03);
+}
+
+.info-sitios h3 {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.05rem;
+}
+
+.info-sitios p {
+  margin: 0.25rem 0 0.7rem;
+  font-size: 0.82rem;
+  opacity: 0.62;
+}
+
+.info-sitios a,
+.info-pie a {
+  color: var(--ember);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(226, 162, 74, 0.4);
+}
+
+.info-sitios a:hover,
+.info-sitios a:focus-visible {
+  border-bottom-color: var(--ember);
+}
+
+.info-carta {
+  margin-top: 1.6rem;
+}
+
+.info-carta > h3 {
+  margin: 0 0 0.3rem;
+  font-family: var(--font);
+  font-size: 1.15rem;
+  color: var(--ember);
+}
+
+.info-carta h4 {
+  margin: 1.1rem 0 0.4rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.info-carta ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 2rem;
+}
+
+.info-carta li {
+  break-inside: avoid;
+  margin-bottom: 0.45rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  opacity: 0.8;
+}
+
+.info-carta strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.info-pie {
+  margin: clamp(2rem, 5vw, 3rem) 0 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(243, 234, 217, 0.1);
+  font-size: 0.82rem;
+  opacity: 0.55;
+}
+
+@media (max-width: 640px) {
+  .info-carta ul {
+    columns: 1;
+  }
+}
