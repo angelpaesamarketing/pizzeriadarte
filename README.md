@@ -193,18 +193,29 @@ Zaragoza, con un enlace de «Como llegar» por cada uno. Los datos estan en
 `src/mapa/cajeros.js`, tomados del mapa que la pizzeria ya tenia en
 pizzeriadarte24h.com: si abre o cierra alguno, se toca solo esa lista.
 
-El mapa es Leaflet con teselas de OpenStreetMap, apagadas por CSS para que no
-deslumbren contra el fondo oscuro, con su atribucion intacta. **Se descarga al
-pedirlo**, no al abrir la web: pesa unos 46 KB comprimidos y vive detras de un
-boton que mucha gente no pulsara.
+Es el mismo mapa que la pizzeria ya tenia en pizzeriadarte24h.com, replicado
+dentro de la web: las mismas teselas de Esri, los mismos marcadores con el
+logo y las mismas funciones.
+
+| | Su web | Aqui |
+| --- | --- | --- |
+| Libreria | Leaflet 1.9.4 (CDN) | Leaflet 1.9.4 (empaquetado) |
+| Teselas | Esri World Street Map | las mismas |
+| Cajero mas cercano (GPS) | si | si |
+| Ruta con origen, a pie | si | si |
+| Lista plegada en movil | si (hasta 760 px) | si |
+
+**Se descarga al pedirlo**, no al abrir la web: pesa unos 46 KB comprimidos y
+vive detras de un boton que mucha gente no pulsara.
 
 Los marcadores se dibujan con `divIcon` en vez de usar las chinchetas de
 Leaflet, cuyas imagenes se cargan por ruta relativa y se rompen al empaquetar.
 
-«Como llegar» usa el esquema oficial de URL de Google Maps
-(`/maps/dir/?api=1`), que en movil abre la aplicacion y en escritorio la web,
-sin necesitar clave. No se fija el medio de transporte: a un cajero se puede
-ir andando o en coche segun donde estes.
+La diferencia que queda es a proposito: los datos salen de `cajeros.js`, que
+es la unica lista del proyecto. En su web estan escritos dentro de la pagina,
+asi que **el dia que abra un cajero nuevo hay que tocar los dos sitios**. Aqui
+con uno basta: cambia el mapa, la ficha del pie y los datos estructurados a la
+vez.
 
 ## SEO local
 

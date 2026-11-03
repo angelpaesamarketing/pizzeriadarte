@@ -869,12 +869,12 @@ img {
 }
 
 .mapa-lista li {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.55rem 0.5rem;
-  border-bottom: 1px solid rgba(243, 234, 217, 0.08);
-  border-radius: 10px;
+  display: block;
+  padding: 0.7rem 0.75rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid rgba(243, 234, 217, 0.12);
+  border-radius: 12px;
+  background: rgba(243, 234, 217, 0.03);
 }
 
 .mapa-lista li.es-activo {
@@ -882,11 +882,8 @@ img {
 }
 
 .mapa-sitio {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex: 1;
-  min-width: 0;
+  display: block;
+  width: 100%;
   padding: 0;
   border: 0;
   background: transparent;
@@ -902,15 +899,19 @@ img {
   font-size: 1rem;
 }
 
+/* Como en su web: la nota a la izquierda y la distancia a la derecha. */
 .mapa-nota {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
   margin-top: 0.1rem;
   font-size: 0.8rem;
   opacity: 0.62;
 }
 
 .mapa-ruta {
-  flex: 0 0 auto;
+  margin-top: 0.55rem;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -991,7 +992,10 @@ img {
     flex: 1 1 58%;
   }
 
-  .mapa-lista {
+  /* El 42% es ancho del panel. Puesto sobre la lista se convertia en alto,
+     porque dentro del panel la direccion es la columna, y se cortaba en dos
+     fichas. */
+  .mapa-panel {
     flex: 0 0 42%;
     border-left: 1px solid rgba(243, 234, 217, 0.1);
   }
@@ -1135,4 +1139,233 @@ img {
   .info-carta ul {
     columns: 1;
   }
+}
+
+/* --- El mapa: chinchetas, globos y creditos como en pizzeriadarte24h.com - */
+.pin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: #fff;
+  border: 4px solid #319300;
+  box-shadow: 0 3px 8px rgba(42, 27, 20, 0.4);
+  display: grid;
+  place-items: center;
+}
+
+.pin img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  border-radius: 50%;
+  transform: rotate(45deg);
+}
+
+.pin.obrador {
+  border-color: #2a1b14;
+}
+
+.pin.nearest {
+  border-color: #ba1211;
+}
+
+/* Donde estas tu. */
+.me {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.25);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  font-family: var(--sans);
+  color: #2a1b14;
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+  min-width: 200px;
+}
+
+.pop .street {
+  display: block;
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.15;
+}
+
+.pop .sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6f5a4e;
+}
+
+.pop .route {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1.5px solid #277601;
+  border-radius: 10px;
+  background: #fbf5ea;
+  color: #1e5c01;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.pop .route:hover {
+  background: #277601;
+  color: #fbf5ea;
+}
+
+/* Los creditos, plegados tras una «i» hasta que se tocan. */
+.leaflet-control-attribution {
+  overflow: hidden;
+  max-width: 26px;
+  white-space: nowrap;
+  transition: max-width 0.2s ease;
+}
+
+.leaflet-control-attribution::before {
+  content: 'i';
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+  font-family: var(--font);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.leaflet-control-attribution:hover,
+.leaflet-control-attribution:focus-visible,
+.leaflet-control-attribution.abierta {
+  max-width: 340px;
+  padding-right: 12px;
+}
+
+/* --- El panel de la derecha ------------------------------------------- */
+.locate {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid rgba(243, 234, 217, 0.3);
+  border-radius: 999px;
+  background: rgba(243, 234, 217, 0.08);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.locate:hover,
+.locate:focus-visible {
+  border-color: var(--ember);
+  background: rgba(226, 162, 74, 0.16);
+  outline: none;
+}
+
+.locate:active {
+  transform: scale(0.97);
+}
+
+.mapa-cabecera .menu-close {
+  margin-left: 0.6rem;
+}
+
+.mapa-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.status {
+  margin: 0.7rem 0.9rem 0.2rem;
+  font-size: 0.8rem;
+  color: rgba(243, 234, 217, 0.72);
+}
+
+.status.err {
+  color: #ff9c92;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.tag.near {
+  background: #ba1211;
+  color: #fff;
+}
+
+.tag.obrador {
+  background: #277601;
+  color: #fbf5ea;
+}
+
+/* El panel es estrecho: la nota se recorta con puntos suspensivos antes que
+   partirse en dos lineas y dejar la distancia pegada detras. */
+.mapa-nota > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mapa-nota .dist {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+/* Plegar la lista es cosa de movil: en pantalla ancha caben los siete. */
+.mapa-vermas {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .mapa-panel:not(.desplegada) .mapa-lista li:not(:first-child) {
+    display: none;
+  }
+
+  .mapa-vermas {
+    display: block;
+  }
+}
+
+.mapa-vermas {
+  margin: 0.2rem 0.75rem max(0.9rem, env(safe-area-inset-bottom));
+  min-height: 40px;
+  border: 1px dashed rgba(243, 234, 217, 0.28);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.mapa-vermas:hover,
+.mapa-vermas:focus-visible {
+  border-color: var(--ember);
+  border-style: solid;
+  outline: none;
 }
