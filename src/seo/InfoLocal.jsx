@@ -1,5 +1,8 @@
-import { CAJEROS, comoLlegar } from '../mapa/cajeros';
+import { useState } from 'react';
+import { CAJEROS, comoLlegar, enMetros, porCercania } from '../mapa/cajeros';
+import { useUbicacion } from '../mapa/useUbicacion';
 import { MENU } from '../menu/menuData';
+import { MapaInfo } from './MapaInfo';
 import { SITIO } from './negocio';
 
 /**
@@ -15,6 +18,11 @@ import { SITIO } from './negocio';
  * que se busque.
  */
 export function InfoLocal() {
+  const { yo, masCercano, aviso, error, localizar } = useUbicacion();
+  const [elegido, setElegido] = useState(null);
+  // Con ubicacion, los cajeros se ordenan por cercania, como en el mapa.
+  const sitios = porCercania(yo);
+
   return (
     <footer className="info">
       <div className="info-dentro">
@@ -31,14 +39,37 @@ export function InfoLocal() {
             Todos los cajeros abren las 24 horas, también de madrugada, fines de semana
             y festivos.
           </p>
+          <div className="info-acciones">
+            <button type="button" className="locate" onClick={localizar}>
+              Cajero más cercano
+            </button>
+            {aviso && (
+              <p className={`status${error ? ' err' : ''}`} role="status">
+                {aviso}
+              </p>
+            )}
+          </div>
+
+          <MapaInfo
+            yo={yo}
+            masCercano={masCercano}
+            elegido={elegido}
+            onElegir={(c) => setElegido(c.id)}
+          />
+
           <ul className="info-sitios">
-            {CAJEROS.map((c) => (
-              <li key={c.id}>
+            {sitios.map((c) => (
+              <li
+                key={c.id}
+                className={c.id === masCercano ? 'es-cercano' : undefined}
+              >
                 <h3>{c.calle}</h3>
                 <p>
                   {c.nota || 'Cajero de pizza y bocadillos'} · Zaragoza · Abierto 24 h
+                  {c.d != null && <em className="dist"> · a {enMetros(c.d)}</em>}
                 </p>
-                <a href={comoLlegar(c)} target="_blank" rel="noopener noreferrer">
+                {c.id === masCercano && <span className="tag near">El más cercano a ti</span>}
+                <a href={comoLlegar(c, yo)} target="_blank" rel="noopener noreferrer">
                   Cómo llegar
                 </a>
               </li>

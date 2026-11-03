@@ -205,8 +205,24 @@ logo y las mismas funciones.
 | Ruta con origen, a pie | si | si |
 | Lista plegada en movil | si (hasta 760 px) | si |
 
-**Se descarga al pedirlo**, no al abrir la web: pesa unos 46 KB comprimidos y
-vive detras de un boton que mucha gente no pulsara.
+El mapa esta en dos sitios, con **una sola implementacion** (`mapa/Mapa.jsx`):
+en la ventana que abre el boton de arriba, y dentro de la seccion «Donde
+estamos» del pie. La ubicacion la lleva `useUbicacion`, que comparten los dos,
+asi que el «cajero mas cercano» tambien ordena y marca las fichas de texto.
+
+**Leaflet se descarga al pedirlo**, no al abrir la web: pesa unos 46 KB
+comprimidos. El de la ventana, al abrirla; el del pie, al acercarse a la
+seccion. Es el mismo trozo, asi que el segundo sale gratis.
+
+Esa carga diferida mira la posicion en cada scroll y **no** usa
+`IntersectionObserver`: este solo avisa al cruzar el umbral, y quien llega al
+pie de un salto -un enlace con ancla, o el navegador recuperando la posicion-
+pasa de estar debajo a estar encima sin cruzarlo, con lo que el mapa no se
+cargaba nunca.
+
+Las fichas de texto de las 7 direcciones se pintan siempre, tambien sin bajar
+a la seccion: son las que lee un buscador, y no pueden depender de que el
+mapa llegue a cargarse.
 
 Los marcadores se dibujan con `divIcon` en vez de usar las chinchetas de
 Leaflet, cuyas imagenes se cargan por ruta relativa y se rompen al empaquetar.

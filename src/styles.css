@@ -1369,3 +1369,48 @@ img {
   border-style: solid;
   outline: none;
 }
+
+/* --- El mapa dentro de «Donde estamos» --------------------------------- */
+.info-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.info-acciones .status {
+  margin: 0;
+}
+
+.info-mapa {
+  margin-bottom: 1.2rem;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(243, 234, 217, 0.12);
+  background: #10131a;
+}
+
+.info-mapa-lienzo {
+  height: clamp(16rem, 42vw, 24rem);
+  width: 100%;
+}
+
+.info-sitios li.es-cercano {
+  border-color: rgba(186, 18, 17, 0.6);
+  background: rgba(186, 18, 17, 0.12);
+}
+
+.info-sitios .dist {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--cream);
+  opacity: 0.85;
+}
+
+.info-sitios .tag {
+  /* En bloque: si no, el enlace de la ruta se le pone al lado y se aprietan. */
+  display: block;
+  width: fit-content;
+  margin: 0 0 0.6rem;
+}
